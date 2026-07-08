@@ -186,16 +186,22 @@
   }
 
   function killPlayer() {
-    if (invuln > 0) return;
+    if (invuln > 0 || state !== STATE.PLAY) return false;
     lives--;
     particle(player.x, player.y, "#8ec8f0");
-    bullets.length = 0;
     invuln = 150;
     player.x = W / 2;
     player.y = H - 64;
-    if (lives < 0) {
+    // Clear screen after the bullet loop exits — never mutate mid-iteration.
+    if (lives <= 0) {
+      lives = 0;
       state = STATE.DEAD;
+      bullets.length = 0;
+      pBullets.length = 0;
+    } else {
+      bullets.length = 0;
     }
+    return true;
   }
 
   function update() {
@@ -325,14 +331,17 @@
     }
 
     // bullets
+    var hitThisFrame = false;
     for (var b = bullets.length - 1; b >= 0; b--) {
       var bl = bullets[b];
+      if (!bl) continue;
       bl.x += bl.vx;
       bl.y += bl.vy;
       if (bl.x < -30 || bl.x > W + 30 || bl.y < -30 || bl.y > H + 30) {
         bullets.splice(b, 1);
         continue;
       }
+      if (hitThisFrame || invuln > 0) continue;
       var dist = Math.hypot(bl.x - player.x, bl.y - player.y);
       // graze
       if (!bl.grazed && dist < bl.r + 18 && dist > bl.r + player.r) {
@@ -340,10 +349,11 @@
         graze++;
         score += 10;
       }
-      // hit
-      if (invuln <= 0 && dist < bl.r + player.r) {
+      // hit — break out so we never iterate an array killPlayer just cleared
+      if (dist < bl.r + player.r) {
+        hitThisFrame = true;
         killPlayer();
-        bullets.splice(b, 1);
+        break;
       }
     }
 
@@ -609,8 +619,13 @@
   }
 
   function loop() {
-    update();
-    draw();
+    try {
+      update();
+      draw();
+    } catch (err) {
+      // Keep the rAF loop alive if a frame errors (e.g. mid-hit edge cases)
+      if (typeof console !== "undefined" && console.error) console.error("[danmaku]", err);
+    }
     requestAnimationFrame(loop);
   }
 
@@ -680,16 +695,12 @@
     keys[" "] = false;
   });
 
-  // UI buttons
+  // UI — start only (bomb is keyboard X; no on-screen bomb button)
   var btnStart = document.getElementById("danmaku-start");
-  var btnBomb = document.getElementById("danmaku-bomb");
   if (btnStart) btnStart.addEventListener("click", function () {
     canvas.focus();
     resetRun();
     state = STATE.PLAY;
-  });
-  if (btnBomb) btnBomb.addEventListener("click", function () {
-    if (state === STATE.PLAY) bomb();
   });
 
   loop();
