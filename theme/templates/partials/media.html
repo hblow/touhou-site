@@ -1,30 +1,40 @@
 <section id="media" class="section section--media" aria-labelledby="media-heading">
   <div class="section__inner">
     <header class="section__header">
+      <p class="section__kicker" lang="ja">読んだもの</p>
       <h2 id="media-heading">Media I&rsquo;ve Read</h2>
-      <p class="section__lede">Manga, print works, and other media — status and short notes.</p>
+      <p class="section__lede">Official manga and novels — covers from print releases.</p>
     </header>
 
     {% set items = articles|selectattr('category.slug', 'equalto', 'media')|list %}
     {% if items %}
-    <ul class="media-list">
+    <div class="media-shelf">
       {% for article in items|sort(attribute='title') %}
-      <li class="media-row">
-        <div class="media-row__main">
-          <h3 class="media-row__title">{{ article.title }}</h3>
-          <p class="media-row__meta">
-            {% if article.media_type %}<span class="pill">{{ article.media_type }}</span>{% endif %}
-            {% if article.summary %}<span class="media-row__note">{{ article.summary|striptags }}</span>{% endif %}
-          </p>
+      <article class="media-card">
+        <div class="media-card__cover">
+          {% if article.cover %}
+          <img src="{{ SITEURL }}/{{ article.cover }}"
+               alt="Cover of {{ article.title }}"
+               width="240" height="340" loading="lazy">
+          {% else %}
+          <div class="media-card__cover-fallback"></div>
+          {% endif %}
         </div>
-        {% if article.read_status %}
-        <span class="status-pill status-pill--{{ article.read_status }}">{{ article.read_status }}</span>
-        {% endif %}
-      </li>
+        <div class="media-card__body">
+          {% if article.media_type %}<span class="pill">{{ article.media_type }}</span>{% endif %}
+          <h3 class="media-card__title">{{ article.title }}</h3>
+          {% if article.summary %}
+          <p class="media-card__note">{{ article.summary|striptags }}</p>
+          {% endif %}
+          {% if article.read_status %}
+          <span class="status-pill status-pill--{{ article.read_status }}">{{ article.read_status }}</span>
+          {% endif %}
+        </div>
+      </article>
       {% endfor %}
-    </ul>
+    </div>
     {% else %}
-    <p class="empty-state">No media entries yet. Add Markdown under <code>content/media/</code>.</p>
+    <p class="empty-state">No media entries yet.</p>
     {% endif %}
   </div>
 </section>

@@ -1,12 +1,22 @@
-<header class="site-header">
+<header class="site-header" data-header>
   <div class="site-header__inner">
-    <a class="site-logo" href="{{ SITEURL }}/#home">{{ SITENAME }}</a>
-    <nav class="site-nav" aria-label="Primary">
+    <a class="site-logo" href="{{ SITEURL }}/#home">
+      <span class="site-logo__mark" aria-hidden="true">桃</span>
+      <span class="site-logo__text">
+        <strong>{{ SITENAME }}</strong>
+        <small lang="ja">天界の桃</small>
+      </span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+      <span class="visually-hidden">Menu</span>
+      <span></span><span></span>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label="Primary" data-nav>
       <ul>
         <li><a href="{{ SITEURL }}/#characters">Top 5</a></li>
         <li><a href="{{ SITEURL }}/#media">Media</a></li>
-        <li><a href="{{ SITEURL }}/#fangames">Fangames</a></li>
-        <li><a href="{{ SITEURL }}/#disclaimer">About</a></li>
+        <li><a href="{{ SITEURL }}/#games">Games</a></li>
+        <li><a class="site-nav__cta" href="{{ SITEURL }}/#disclaimer">Credits</a></li>
       </ul>
     </nav>
   </div>

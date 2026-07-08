@@ -5,8 +5,10 @@ Date: 2026-03-10
 Media_Type: manga
 Read_Status: reading
 Rating: 4
-Cover: images/placeholders/media.svg
+Cover: images/media/fs-cover.webp
 Tags: official, kosuzu
 Summary: Kosuzu + rare books energy. Still working through it.
 
 Placeholder entry.
+
+Image source: Official cover art via Touhou Wiki.
