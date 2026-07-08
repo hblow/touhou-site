@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main id="main">
+  <section id="home" class="hero" aria-labelledby="hero-title">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">Personal fan shrine · inspired by Tenshi Hinanawi</p>
+      <h1 id="hero-title" class="hero__title">{{ SITENAME }}</h1>
+      <p class="hero__tagline">{{ SITE_TAGLINE }}</p>
+      <p class="hero__lede">
+        Favourite characters, media I&rsquo;ve read, and fangames I&rsquo;ve played
+        from the Touhou Project.
+      </p>
+      <a class="btn btn--primary" href="#characters">Meet the Top 5</a>
+    </div>
+    <div class="hero__clouds" aria-hidden="true"></div>
+  </section>
+
+  {% include "partials/characters.html" %}
+  {% include "partials/media.html" %}
+  {% include "partials/fangames.html" %}
+</main>
+{% endblock %}

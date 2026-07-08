@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="{{ DEFAULT_LANG }}"
+      class="{% if CLOUDS_INTRO %}has-clouds{% endif %}"
+      data-clouds-enabled="{% if CLOUDS_INTRO %}true{% else %}false{% endif %}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ SITE_TAGLINE }}{% endblock %}">
+  <meta name="author" content="{{ AUTHOR }}">
+  {% block extra_head %}{% endblock %}
+  <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/base.css">
+  <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/sections.css">
+  {% if CLOUDS_INTRO %}
+  <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/clouds.css">
+  {% endif %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  {% if CLOUDS_INTRO %}
+    {% include "partials/clouds.html" %}
+  {% endif %}
+  {% include "partials/nav.html" %}
+  {% block content %}{% endblock %}
+  {% include "partials/footer.html" %}
+  {% if CLOUDS_INTRO %}
+  <script src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/clouds.js" defer></script>
+  {% endif %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

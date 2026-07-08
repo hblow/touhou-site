@@ -1,0 +1,43 @@
+<section id="characters" class="section section--characters" aria-labelledby="characters-heading">
+  <div class="section__inner">
+    <header class="section__header">
+      <h2 id="characters-heading">Top 5 Characters</h2>
+      <p class="section__lede">Ranked favourites — Tenshi first, of course.</p>
+    </header>
+
+    {% set ns = namespace(rows=[]) %}
+    {% for a in articles if a.category and a.category.slug == 'characters' and a.rank %}
+      {% set r = a.rank|int(-1) %}
+      {% if r >= 1 %}
+        {% set _ = ns.rows.append((r, a.title, a)) %}
+      {% endif %}
+    {% endfor %}
+
+    {% if ns.rows %}
+    <div class="card-grid card-grid--characters">
+      {% for rank, title, article in ns.rows|sort %}
+        {% if loop.index <= TOP_CHARACTERS_LIMIT|default(5) %}
+        <article class="char-card" data-rank="{{ rank }}">
+          <div class="char-card__portrait">
+            {% if article.portrait %}
+            <img src="{{ SITEURL }}/{{ article.portrait }}"
+                 alt="Portrait placeholder for {{ article.title }}"
+                 width="320" height="240" loading="lazy">
+            {% else %}
+            <div class="char-card__portrait-fallback" aria-hidden="true"></div>
+            {% endif %}
+            <span class="char-card__rank" aria-label="Rank {{ rank }}">#{{ rank }}</span>
+          </div>
+          <h3 class="char-card__name">{{ article.title }}</h3>
+          {% if article.summary %}
+          <p class="char-card__blurb">{{ article.summary|striptags }}</p>
+          {% endif %}
+        </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No ranked characters yet. Add Markdown under <code>content/characters/</code>.</p>
+    {% endif %}
+  </div>
+</section>

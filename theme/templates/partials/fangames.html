@@ -1,0 +1,40 @@
+<section id="fangames" class="section section--fangames" aria-labelledby="fangames-heading">
+  <div class="section__inner">
+    <header class="section__header">
+      <h2 id="fangames-heading">Fangames I&rsquo;ve Played</h2>
+      <p class="section__lede">Indie danmaku, fighting games, and more — personal notes only.</p>
+    </header>
+
+    {% set items = articles|selectattr('category.slug', 'equalto', 'fangames')|list %}
+    {% if items %}
+    <div class="card-grid card-grid--fangames">
+      {% for article in items|sort(attribute='title') %}
+      <article class="game-card">
+        {% if article.portrait %}
+        <div class="game-card__thumb">
+          <img src="{{ SITEURL }}/{{ article.portrait }}"
+               alt=""
+               width="400" height="200" loading="lazy">
+        </div>
+        {% endif %}
+        <h3 class="game-card__title">{{ article.title }}</h3>
+        {% if article.play_status %}
+        <span class="status-pill status-pill--{{ article.play_status }}">{{ article.play_status }}</span>
+        {% endif %}
+        {% if article.summary %}
+        <p class="game-card__note">{{ article.summary|striptags }}</p>
+        {% endif %}
+        {% if article.rating %}
+        <p class="game-card__rating" aria-label="Rating {{ article.rating }} of 5">
+          {% set r = article.rating|int(0) %}
+          {% for i in range(1, 6) %}{% if i <= r %}★{% else %}☆{% endif %}{% endfor %}
+        </p>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No fangames yet. Add Markdown under <code>content/fangames/</code>.</p>
+    {% endif %}
+  </div>
+</section>

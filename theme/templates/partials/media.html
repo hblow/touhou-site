@@ -1,0 +1,30 @@
+<section id="media" class="section section--media" aria-labelledby="media-heading">
+  <div class="section__inner">
+    <header class="section__header">
+      <h2 id="media-heading">Media I&rsquo;ve Read</h2>
+      <p class="section__lede">Manga, print works, and other media — status and short notes.</p>
+    </header>
+
+    {% set items = articles|selectattr('category.slug', 'equalto', 'media')|list %}
+    {% if items %}
+    <ul class="media-list">
+      {% for article in items|sort(attribute='title') %}
+      <li class="media-row">
+        <div class="media-row__main">
+          <h3 class="media-row__title">{{ article.title }}</h3>
+          <p class="media-row__meta">
+            {% if article.media_type %}<span class="pill">{{ article.media_type }}</span>{% endif %}
+            {% if article.summary %}<span class="media-row__note">{{ article.summary|striptags }}</span>{% endif %}
+          </p>
+        </div>
+        {% if article.read_status %}
+        <span class="status-pill status-pill--{{ article.read_status }}">{{ article.read_status }}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-state">No media entries yet. Add Markdown under <code>content/media/</code>.</p>
+    {% endif %}
+  </div>
+</section>

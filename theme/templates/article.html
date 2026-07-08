@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} · {{ SITENAME }}{% endblock %}
+{% block meta_description %}{{ article.summary|striptags|truncate(160) }}{% endblock %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex,nofollow">
+{% endblock %}
+
+{% block content %}
+<main id="main" class="article-page">
+  <article class="article-detail">
+    <header class="article-detail__header">
+      <p class="article-detail__kicker">{{ article.category }}</p>
+      <h1>{{ article.title }}</h1>
+      {% if article.summary %}
+      <p class="article-detail__summary">{{ article.summary|striptags }}</p>
+      {% endif %}
+    </header>
+    <div class="article-detail__body prose">
+      {{ article.content }}
+    </div>
+    <p class="article-detail__back"><a href="{{ SITEURL }}/">← Back to {{ SITENAME }}</a></p>
+  </article>
+</main>
+{% endblock %}

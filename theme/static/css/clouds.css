@@ -1,0 +1,94 @@
+/* Clouds-parting intro overlay */
+.cloud-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: auto;
+}
+.cloud-intro[hidden] {
+  display: none !important;
+}
+.cloud-intro.is-revealing .cloud-intro__layer--left {
+  transform: translateX(-110%);
+}
+.cloud-intro.is-revealing .cloud-intro__layer--right {
+  transform: translateX(110%);
+}
+.cloud-intro.is-revealing .cloud-intro__center {
+  opacity: 0;
+}
+.cloud-intro.is-revealing .cloud-intro__sky {
+  opacity: 0;
+}
+
+.cloud-intro__sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--sky-mid) 0%, var(--sky-light) 50%, var(--peach) 100%);
+  transition: opacity 1.4s ease-out;
+}
+
+.cloud-intro__layer {
+  position: absolute;
+  top: -10%;
+  width: 70%;
+  height: 120%;
+  transition: transform 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+.cloud-intro__layer--left {
+  left: -15%;
+  background:
+    radial-gradient(ellipse 55% 40% at 60% 35%, #fff 0%, #fff 55%, transparent 56%),
+    radial-gradient(ellipse 45% 35% at 30% 55%, #f8fbff 0%, #f8fbff 55%, transparent 56%),
+    radial-gradient(ellipse 50% 38% at 50% 75%, #fff 0%, #fff 55%, transparent 56%),
+    linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.75) 70%, transparent 100%);
+}
+.cloud-intro__layer--right {
+  right: -15%;
+  background:
+    radial-gradient(ellipse 55% 40% at 40% 40%, #fff 0%, #fff 55%, transparent 56%),
+    radial-gradient(ellipse 45% 35% at 70% 60%, #f8fbff 0%, #f8fbff 55%, transparent 56%),
+    radial-gradient(ellipse 50% 38% at 50% 80%, #fff 0%, #fff 55%, transparent 56%),
+    linear-gradient(270deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.75) 70%, transparent 100%);
+}
+
+.cloud-intro__center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  transition: opacity 0.8s ease-out 0.2s;
+}
+.cloud-intro__label {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+}
+.cloud-intro__skip {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.6rem 1.25rem;
+  border-radius: 999px;
+  border: 2px solid var(--sky-deep);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--sky-deep);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.cloud-intro__skip:hover,
+.cloud-intro__skip:focus-visible {
+  background: var(--sky-deep);
+  color: #fff;
+  outline: none;
+}
+
+html.is-clouds-active body {
+  overflow: hidden;
+}

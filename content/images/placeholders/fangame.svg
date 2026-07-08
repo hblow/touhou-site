@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a4a7a"/>
+      <stop offset="100%" stop-color="#4a8ec8"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="200" fill="url(#fg)"/>
+  <circle cx="80" cy="60" r="8" fill="#e8c56a"/>
+  <circle cx="200" cy="100" r="5" fill="#f4a88a"/>
+  <circle cx="320" cy="70" r="6" fill="#a8d4f0"/>
+  <text x="200" y="160" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="18">fangame</text>
+</svg>
