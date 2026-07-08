@@ -16,3 +16,6 @@ Images sourced via the English Touhou Wiki for a non-commercial personal fan sit
 | Fighter covers | th105 / th123 / th155 | Official box art |
 
 Not affiliated with the rights holders. Remove on request.
+
+| kasen.webp | Antinomy of Common Flowers | Th155Kasen.png |
+| mokou.webp | Antinomy of Common Flowers | Th155Mokou.png |

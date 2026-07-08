@@ -1,0 +1,27 @@
+<section id="music" class="section section--music" aria-labelledby="music-heading">
+  <div class="section__inner">
+    <header class="section__header">
+      <p class="section__kicker" lang="ja">音楽</p>
+      <h2 id="music-heading">Music Covers &amp; Arranges</h2>
+      <p class="section__lede">Arranges and covers I keep on loop.</p>
+    </header>
+    {% set items = articles|selectattr('category.slug', 'equalto', 'music')|list %}
+    {% if items %}
+    <ul class="music-list">
+      {% for article in items|sort(attribute='title') %}
+      <li class="music-row">
+        <span class="music-row__icon" aria-hidden="true">♪</span>
+        <div>
+          <h3 class="music-row__title">{{ article.title }}</h3>
+          {% if article.summary %}
+          <p class="music-row__note">{{ article.summary|striptags }}</p>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-state">No tracks listed yet.</p>
+    {% endif %}
+  </div>
+</section>

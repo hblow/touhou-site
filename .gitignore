@@ -10,3 +10,7 @@ venv/
 .cache/
 .mypy_cache/
 .pytest_cache/
+
+# Private personal notes — never commit
+touhou.txt
+**/touhou.txt

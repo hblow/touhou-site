@@ -1,14 +1,11 @@
-Title: Forbidden Scrollery
+Title: Touhou Suzunaan ~ Forbidden Scrollery
 Slug: forbidden-scrollery
 Category: media
-Date: 2026-03-10
+Date: 2025-02-01
 Media_Type: manga
-Read_Status: reading
-Rating: 4
+Read_Status: completed
+Rating: 5
 Cover: images/media/fs-cover.webp
-Tags: official, kosuzu
-Summary: Kosuzu + rare books energy. Still working through it.
-
-Placeholder entry.
-
-Image source: Official cover art via Touhou Wiki.
+Tags: favourite, official, kosuzu
+Summary: ★ Favourite · Official — Kosuzu and the rare-book life at Suzunaan.
+Link: https://mangadex.org/title/dbae4cf5-27de-40eb-b9e1-346c4f2cf8aa/touhou-suzunaan-forbidden-scrollery

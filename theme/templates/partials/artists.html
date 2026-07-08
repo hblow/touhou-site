@@ -1,0 +1,24 @@
+<section id="artists" class="section section--artists" aria-labelledby="artists-heading">
+  <div class="section__inner">
+    <header class="section__header">
+      <p class="section__kicker" lang="ja">絵師</p>
+      <h2 id="artists-heading">Artists I Follow</h2>
+      <p class="section__lede">Illustrators and doujin creators whose work I keep coming back to.</p>
+    </header>
+    {% set items = articles|selectattr('category.slug', 'equalto', 'artists')|list %}
+    {% if items %}
+    <ul class="artist-cloud">
+      {% for article in items|sort(attribute='title') %}
+      <li class="artist-chip" title="{{ article.summary|striptags }}">
+        <span class="artist-chip__name">{{ article.title }}</span>
+        {% if article.summary %}
+        <span class="artist-chip__blurb">{{ article.summary|striptags|truncate(90) }}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-state">No artists listed yet.</p>
+    {% endif %}
+  </div>
+</section>

@@ -29,20 +29,20 @@
       </h1>
       <p class="hero__tagline">{{ SITE_TAGLINE }}</p>
       <p class="hero__lede">
-        A celestial-peaked corner of the web for my favourite Touhou characters,
-        print media, and fighting-game hours — led by the peachy tyrant of Heaven herself.
+        My real favourites from the Touhou Project — characters, manga, artists,
+        music, and a playable danmaku homage. Led by Hinanawi Tenshi.
       </p>
       <div class="hero__actions">
         <a class="btn btn--primary" href="#characters">
           <span>Meet the Top 5</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a class="btn btn--ghost" href="#games">Games</a>
+        <a class="btn btn--ghost" href="#demo">Play demo</a>
       </div>
       <dl class="hero__stats">
         <div><dt>Top characters</dt><dd>5</dd></div>
         <div><dt>Media logged</dt><dd>{{ articles|selectattr('category.slug','equalto','media')|list|length }}</dd></div>
-        <div><dt>Games logged</dt><dd>{{ articles|selectattr('category.slug','equalto','fangames')|list|length }}</dd></div>
+        <div><dt>Artists</dt><dd>{{ articles|selectattr('category.slug','equalto','artists')|list|length }}</dd></div>
       </dl>
     </div>
     <a class="hero__scroll" href="#characters" aria-label="Scroll to characters">
@@ -51,7 +51,10 @@
   </section>
 
   {% include "partials/characters.html" %}
+  {% include "partials/danmaku.html" %}
   {% include "partials/media.html" %}
+  {% include "partials/artists.html" %}
+  {% include "partials/music.html" %}
   {% include "partials/fangames.html" %}
 </main>
 {% endblock %}

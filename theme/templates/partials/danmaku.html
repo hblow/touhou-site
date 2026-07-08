@@ -1,0 +1,41 @@
+<section id="demo" class="section section--demo" aria-labelledby="demo-heading">
+  <div class="section__inner">
+    <header class="section__header section__header--split">
+      <div>
+        <p class="section__kicker" lang="ja">弾幕</p>
+        <h2 id="demo-heading">Danmaku Demo</h2>
+        <p class="section__lede">
+          A browser mini-stage inspired by the classic Touhou shooters — focus shot,
+          graze, bombs, and a Tenshi-flavoured spellcard finale. Original code; not a port.
+        </p>
+      </div>
+    </header>
+
+    <div id="danmaku-demo" class="danmaku">
+      <div class="danmaku__stage">
+        <canvas id="danmaku-canvas" width="384" height="448" role="img"
+                aria-label="Danmaku gameplay canvas. Press Z to start."></canvas>
+        <div class="danmaku__frame" aria-hidden="true"></div>
+      </div>
+      <div class="danmaku__panel">
+        <h3 class="danmaku__panel-title">Controls</h3>
+        <ul class="danmaku__controls">
+          <li><kbd>←↑↓→</kbd> / <kbd>WASD</kbd> Move</li>
+          <li><kbd>Shift</kbd> Focus (slow + hitbox)</li>
+          <li><kbd>Z</kbd> / <kbd>Space</kbd> Shoot · start</li>
+          <li><kbd>X</kbd> Bomb</li>
+          <li><kbd>P</kbd> / <kbd>Esc</kbd> Pause</li>
+          <li>Touch: drag to move, auto-focus fire</li>
+        </ul>
+        <div class="danmaku__actions">
+          <button type="button" class="btn btn--primary" id="danmaku-start">Start stage</button>
+          <button type="button" class="btn btn--ghost" id="danmaku-bomb">Bomb</button>
+        </div>
+        <p class="danmaku__note">
+          Survive fairy waves, then face a three-phase celestial boss pattern.
+          Graze bullets for points. This is a fan-made homage — mechanics only.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

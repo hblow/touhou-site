@@ -15,7 +15,7 @@ TIMEZONE = "America/New_York"
 DEFAULT_LANG = "en"
 
 # Content layout
-ARTICLE_PATHS = ["characters", "media", "fangames"]
+ARTICLE_PATHS = ["characters", "media", "fangames", "artists", "music"]
 PAGE_PATHS = ["pages"]
 STATIC_PATHS = ["images"]
 

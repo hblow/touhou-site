@@ -1,12 +1,10 @@
-Title: Reimu Hakurei
+Title: Hakurei Reimu
 Slug: reimu-hakurei
 Category: characters
 Date: 2026-07-08
-Rank: 2
+Rank: 5
 Portrait: images/characters/reimu.webp
 Tags: protagonist, shrine-maiden
-Summary: The eternal protagonist — effortless danmaku, dry humour, and the heart of every incident resolution.
+Summary: Holding the #5 seat for now — currently tied in my head with Komachi and Kaguya, so this slot may rotate.
 
-Placeholder ranking — edit this blurb anytime.
-
-Image source: Antinomy of Common Flowers portrait (via Touhou Wiki; © Team Shanghai Alice / Twilight Frontier).
+#5 (fluid). Also contending: Onozuka Komachi, Houraisan Kaguya. Portrait from Antinomy of Common Flowers.

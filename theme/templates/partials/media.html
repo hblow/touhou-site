@@ -3,25 +3,28 @@
     <header class="section__header">
       <p class="section__kicker" lang="ja">読んだもの</p>
       <h2 id="media-heading">Media I&rsquo;ve Read</h2>
-      <p class="section__lede">Official manga and novels — covers from print releases.</p>
+      <p class="section__lede">Doujin and official manga from my list — ★ marks personal favourites.</p>
     </header>
 
     {% set items = articles|selectattr('category.slug', 'equalto', 'media')|list %}
     {% if items %}
     <div class="media-shelf">
-      {% for article in items|sort(attribute='title') %}
+      {% for article in items|sort(attribute='date', reverse=True) %}
       <article class="media-card">
+        {% if article.cover %}
         <div class="media-card__cover">
-          {% if article.cover %}
           <img src="{{ SITEURL }}/{{ article.cover }}"
                alt="Cover of {{ article.title }}"
                width="240" height="340" loading="lazy">
-          {% else %}
-          <div class="media-card__cover-fallback"></div>
-          {% endif %}
         </div>
+        {% endif %}
         <div class="media-card__body">
           {% if article.media_type %}<span class="pill">{{ article.media_type }}</span>{% endif %}
+          {% if article.tags %}
+            {% for tag in article.tags if tag.name == 'favourite' or tag.slug == 'favourite' %}
+            <span class="pill" style="background:rgba(240,193,75,0.2);color:var(--gold-soft);border-color:rgba(240,193,75,0.35)">★ fav</span>
+            {% endfor %}
+          {% endif %}
           <h3 class="media-card__title">{{ article.title }}</h3>
           {% if article.summary %}
           <p class="media-card__note">{{ article.summary|striptags }}</p>
