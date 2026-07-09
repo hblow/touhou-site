@@ -1,10 +1,11 @@
 Title: Over the Rainbow
 Slug: over-the-rainbow
 Category: media
-Date: 2025-08-01
-Media_Type: doujin
+Date: 2025-01-27
+Media_Type: manga
 Read_Status: completed
-Rating: 4
-Tags: tenshi, kogasa
-Summary: Tenshi & Kogasa — Over the Rainbow by Yappa Muri.
+Summary: Tenshi, Kogasa. By Yappa Muri.
 Link: https://danbooru.donmai.us/pools/14389
+
+Tenshi, Kogasa. By Yappa Muri.
+https://danbooru.donmai.us/pools/14389

@@ -2,6 +2,6 @@ Title: ranko_no_ane
 Slug: ranko-no-ane
 Category: artists
 Date: 2026-01-03
-Summary: Artist I follow.
+Summary: ranko_no_ane
 
-Artist I follow.
+ranko_no_ane

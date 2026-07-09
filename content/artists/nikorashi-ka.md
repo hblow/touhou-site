@@ -2,6 +2,6 @@ Title: nikorashi-ka
 Slug: nikorashi-ka
 Category: artists
 Date: 2026-01-04
-Summary: Artist I follow.
+Summary: nikorashi-ka
 
-Artist I follow.
+nikorashi-ka

@@ -2,6 +2,6 @@ Title: curesheepko
 Slug: curesheepko
 Category: artists
 Date: 2026-01-18
-Summary: Artist I follow.
+Summary: curesheepko
 
-Artist I follow.
+curesheepko

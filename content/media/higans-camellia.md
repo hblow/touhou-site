@@ -1,10 +1,12 @@
 Title: Higan's Camellia
 Slug: higans-camellia
 Category: media
-Date: 2025-06-02
-Media_Type: doujin
+Date: 2025-01-04
+Media_Type: manga
 Read_Status: completed
-Rating: 5
-Tags: favourite, akyuu, komachi, yakumi-sarai
-Summary: ★ Favourite — Akyuu & Komachi. Another Yakumi Sarai standout.
+Tags: favourite
+Summary: ★ favourite — Akyuu, Komachi. By Yakumi Sarai.
 Link: https://dynasty-scans.com/chapters/higans_camellia
+
+★ favourite — Akyuu, Komachi. By Yakumi Sarai.
+https://dynasty-scans.com/chapters/higans_camellia

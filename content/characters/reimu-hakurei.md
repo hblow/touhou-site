@@ -4,7 +4,7 @@ Category: characters
 Date: 2026-07-08
 Rank: 5
 Portrait: images/characters/reimu.webp
-Tags: protagonist, shrine-maiden
-Summary: Holding the #5 seat for now — currently tied in my head with Komachi and Kaguya, so this slot may rotate.
+Tags: favourite
+Summary: #5 for now — also contending with Onozuka Komachi and Houraisan Kaguya (order still undecided).
 
-#5 (fluid). Also contending: Onozuka Komachi, Houraisan Kaguya. Portrait from Antinomy of Common Flowers.
+#5 slot is shared in my notes with Komachi and Kaguya; Reimu is listed here until I settle the order.

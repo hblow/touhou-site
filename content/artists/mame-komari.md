@@ -2,6 +2,6 @@ Title: mame komari
 Slug: mame-komari
 Category: artists
 Date: 2026-01-07
-Summary: Artist I follow.
+Summary: mame komari
 
-Artist I follow.
+mame komari

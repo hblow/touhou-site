@@ -29,6 +29,10 @@
   var spellName = "";
   var spellTimer = 0;
   var difficulty = 1;
+  // Fixed 60Hz simulation so high-refresh monitors don't speed the game up
+  var FIXED_MS = 1000 / 60;
+  var lastTs = 0;
+  var simAcc = 0;
 
   var player = {
     x: W / 2,
@@ -65,6 +69,8 @@
     spellName = "";
     spellTimer = 0;
     spawnWave(0);
+    simAcc = 0;
+    lastTs = 0;
   }
 
   function spawnWave(t) {
@@ -618,12 +624,30 @@
     }
   }
 
-  function loop() {
+  function loop(ts) {
+    if (typeof ts !== "number") ts = performance.now();
+    if (!lastTs) lastTs = ts;
+    var frameDt = ts - lastTs;
+    lastTs = ts;
+    // Cap catch-up so a long tab-hide doesn't explode the sim
+    if (frameDt > 100) frameDt = 100;
+
     try {
-      update();
+      if (state === STATE.PLAY) {
+        simAcc += frameDt;
+        // Max 5 steps per paint (prevents spiral of death)
+        var steps = 0;
+        while (simAcc >= FIXED_MS && steps < 5) {
+          update();
+          simAcc -= FIXED_MS;
+          steps++;
+        }
+        if (steps === 5) simAcc = 0;
+      } else {
+        simAcc = 0;
+      }
       draw();
     } catch (err) {
-      // Keep the rAF loop alive if a frame errors (e.g. mid-hit edge cases)
       if (typeof console !== "undefined" && console.error) console.error("[danmaku]", err);
     }
     requestAnimationFrame(loop);

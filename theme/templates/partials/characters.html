@@ -3,10 +3,9 @@
     <header class="section__header section__header--split">
       <div>
         <p class="section__kicker" lang="ja">お気に入り</p>
-        <h2 id="characters-heading">Top 5 Characters</h2>
-        <p class="section__lede">My actual ranking — Tenshi #1, Marisa #2, then Kasen &amp; Mokou. #5 is currently Reimu (Komachi &amp; Kaguya still contending).</p>
+        <h2 id="characters-heading">Top Favourites</h2>
+        <p class="section__lede">From my list: Tenshi → Marisa → Kasen → Mokou → then Reimu / Komachi / Kaguya (still undecided).</p>
       </div>
-      <p class="section__aside">Sprites &amp; portraits © Team Shanghai Alice / Twilight Frontier</p>
     </header>
 
     {% set ns = namespace(rows=[]) %}
@@ -27,16 +26,12 @@
             <div class="char-card__portrait">
               {% if article.portrait %}
               <img src="{{ SITEURL }}/{{ article.portrait }}"
-                   alt="{{ article.title }} — official fighting game portrait"
+                   alt="{{ article.title }} — fighting game portrait"
                    width="400" height="400" loading="lazy">
-              {% else %}
-              <div class="char-card__portrait-fallback" aria-hidden="true"></div>
               {% endif %}
-              <span class="char-card__rank">
-                <em>#</em>{{ rank }}
-              </span>
+              <span class="char-card__rank"><em>#</em>{{ rank }}</span>
               {% if rank == 1 %}
-              <span class="char-card__badge">Favourite</span>
+              <span class="char-card__badge">#1</span>
               {% endif %}
             </div>
             <div class="char-card__body">
@@ -44,12 +39,11 @@
               {% if article.summary %}
               <p class="char-card__blurb">{{ article.summary|striptags }}</p>
               {% endif %}
-              {% if article.tags %}
-              <ul class="char-card__tags">
-                {% for tag in article.tags[:3] %}
-                <li>{{ tag }}</li>
-                {% endfor %}
-              </ul>
+              {% if article.content|striptags|trim and article.content|striptags|trim != article.summary|striptags|trim %}
+              <details class="char-card__more">
+                <summary>More</summary>
+                <div class="char-card__full">{{ article.content }}</div>
+              </details>
               {% endif %}
             </div>
           </div>

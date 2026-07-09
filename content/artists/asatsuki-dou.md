@@ -2,6 +2,6 @@ Title: Asatsuki Dou
 Slug: asatsuki-dou
 Category: artists
 Date: 2026-01-05
-Summary: Artist I follow — distinctive tone.
+Summary: evil
 
-Artist I follow — distinctive tone.
+evil

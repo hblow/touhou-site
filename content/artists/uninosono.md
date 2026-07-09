@@ -2,6 +2,6 @@ Title: uninosono
 Slug: uninosono
 Category: artists
 Date: 2026-01-19
-Summary: Artist I follow.
+Summary: uninosono
 
-Artist I follow.
+uninosono

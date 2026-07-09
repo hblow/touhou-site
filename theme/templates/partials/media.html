@@ -2,40 +2,41 @@
   <div class="section__inner">
     <header class="section__header">
       <p class="section__kicker" lang="ja">読んだもの</p>
-      <h2 id="media-heading">Media I&rsquo;ve Read</h2>
-      <p class="section__lede">Doujin and official manga from my list — ★ marks personal favourites.</p>
+      <h2 id="media-heading">Manga I&rsquo;ve Read</h2>
+      <p class="section__lede">From my list — ★ favourite, ! official where noted.</p>
     </header>
 
     {% set items = articles|selectattr('category.slug', 'equalto', 'media')|list %}
     {% if items %}
-    <div class="media-shelf">
-      {% for article in items|sort(attribute='date', reverse=True) %}
-      <article class="media-card">
-        {% if article.cover %}
-        <div class="media-card__cover">
-          <img src="{{ SITEURL }}/{{ article.cover }}"
-               alt="Cover of {{ article.title }}"
-               width="240" height="340" loading="lazy">
-        </div>
-        {% endif %}
-        <div class="media-card__body">
-          {% if article.media_type %}<span class="pill">{{ article.media_type }}</span>{% endif %}
-          {% if article.tags %}
-            {% for tag in article.tags if tag.name == 'favourite' or tag.slug == 'favourite' %}
-            <span class="pill" style="background:rgba(240,193,75,0.2);color:var(--gold-soft);border-color:rgba(240,193,75,0.35)">★ fav</span>
-            {% endfor %}
-          {% endif %}
-          <h3 class="media-card__title">{{ article.title }}</h3>
+    <ul class="media-list">
+      {% for article in items|sort(attribute='title') %}
+      <li class="media-row">
+        <div class="media-row__main">
+          <div class="media-row__flags">
+            {% if article.tags %}
+              {% for tag in article.tags %}
+                {% if tag.slug == 'favourite' or tag.name == 'favourite' %}
+                <span class="pill pill--fav">★ fav</span>
+                {% elif tag.slug == 'official' or tag.name == 'official' %}
+                <span class="pill">official</span>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
+          <h3 class="media-row__title">
+            {% if article.link %}
+            <a href="{{ article.link }}" rel="noopener noreferrer" target="_blank">{{ article.title }}</a>
+            {% else %}
+            {{ article.title }}
+            {% endif %}
+          </h3>
           {% if article.summary %}
-          <p class="media-card__note">{{ article.summary|striptags }}</p>
-          {% endif %}
-          {% if article.read_status %}
-          <span class="status-pill status-pill--{{ article.read_status }}">{{ article.read_status }}</span>
+          <p class="media-row__note">{{ article.summary|striptags }}</p>
           {% endif %}
         </div>
-      </article>
+      </li>
       {% endfor %}
-    </div>
+    </ul>
     {% else %}
     <p class="empty-state">No media entries yet.</p>
     {% endif %}

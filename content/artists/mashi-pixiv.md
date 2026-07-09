@@ -1,7 +1,7 @@
-Title: mashi
+Title: mashi (pixiv zcjd2538)
 Slug: mashi-pixiv
 Category: artists
 Date: 2026-01-13
-Summary: Artist I follow.
+Summary: mashi (pixiv zcjd2538)
 
-Artist I follow.
+mashi (pixiv zcjd2538)
