@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Flandre, Akyuu
 Byline: Takitarou and Tohonifun
+Cover: images/media/offsetting-inferno.webp
 Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/chapters/offsetting_inferno
 

@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Tenshi, Kogasa
 Byline: Yappa Muri
+Cover: images/media/over-the-rainbow.webp
 Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/14389
 

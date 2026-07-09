@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Tenshi, Shion
 Byline: mikagami Hiyori
+Cover: images/media/tenshion.webp
 Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/13915
 

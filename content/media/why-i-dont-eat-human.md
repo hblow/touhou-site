@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Rumia
 Byline: 13 (Ichimi)
+Cover: images/media/why-i-dont-eat-human.webp
 Summary: Manga from my reading list.
 Link: https://mangadex.org/title/13387399-44d9-4b68-b11a-a8a35d195410/touhou-watashi-ga-ningen-o-tabenai-riyuu
 

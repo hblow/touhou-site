@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Seiga
 Byline: Tohonifun
+Cover: images/media/solar-eclipse.webp
 Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/series/solar_eclipse
 

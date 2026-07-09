@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Remilia, Flandre
 Byline: FLIPFLOPs
+Cover: images/media/two-scarlet-sacraments.webp
 Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/series/two_scarlet_sacraments_under_the_starry_sky
 

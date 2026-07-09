@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Orin, Mizuchi
 Byline: Fuuzasa
+Cover: images/media/dance-for-me-spirit.webp
 Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/27245
 

@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Kaguya
 Byline: Amida Kuzu
+Cover: images/media/princess-of-the-moon.webp
 Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/chapters/princess_of_the_moon
 

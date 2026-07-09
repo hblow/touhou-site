@@ -19,3 +19,7 @@ Not affiliated with the rights holders. Remove on request.
 
 | kasen.webp | Antinomy of Common Flowers | Th155Kasen.png |
 | mokou.webp | Antinomy of Common Flowers | Th155Mokou.png |
+
+## Media covers
+Official covers (Forbidden Scrollery, Wild and Horned Hermit) sourced via Touhou Wiki.
+Other entries use themed generated thumbnails for personal catalog display (not official scans).

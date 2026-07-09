@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Kaguya
 Byline: Tohonifun
+Cover: images/media/kaguya-tohonifun.webp
 Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/chapters/kaguya
 

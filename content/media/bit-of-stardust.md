@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Enoko, Marisa
 Byline: aoi (annbi)
+Cover: images/media/bit-of-stardust.webp
 Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/23197
 

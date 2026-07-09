@@ -7,6 +7,7 @@ Read_Status: completed
 Tags: favourite
 Characters: Marisa
 Byline: aoi (annbi)
+Cover: images/media/i-want-her.webp
 Summary: ★ favourite
 Link: https://danbooru.donmai.us/pools/11605
 

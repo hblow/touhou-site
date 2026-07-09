@@ -3,14 +3,34 @@
     <header class="section__header">
       <p class="section__kicker" lang="ja">読んだもの</p>
       <h2 id="media-heading">Manga I&rsquo;ve Read</h2>
-      <p class="section__lede">From my list — character tags and author kept separate. ★ = favourite.</p>
+      <p class="section__lede">Thumbnails from covers or themed art — click a row for the full card. ★ = favourite.</p>
     </header>
 
     {% set items = articles|selectattr('category.slug', 'equalto', 'media')|list %}
     {% if items %}
     <ul class="media-list">
       {% for article in items|sort(attribute='title') %}
-      <li class="media-row">
+      <li class="media-row" data-media-card>
+        <button type="button"
+                class="media-row__hit"
+                data-media-open
+                data-media-id="media-{{ article.slug }}"
+                aria-haspopup="dialog"
+                aria-controls="media-modal">
+          <span class="visually-hidden">Open details for {{ article.title }}</span>
+        </button>
+
+        <div class="media-row__thumb" aria-hidden="true">
+          {% if article.cover %}
+          <img src="{{ SITEURL }}/{{ article.cover }}"
+               alt=""
+               width="72" height="100"
+               loading="lazy">
+          {% else %}
+          <div class="media-row__thumb-fallback"></div>
+          {% endif %}
+        </div>
+
         <div class="media-row__main">
           <div class="media-row__flags">
             {% if article.tags %}
@@ -24,13 +44,7 @@
             {% endif %}
           </div>
 
-          <h3 class="media-row__title">
-            {% if article.link %}
-            <a href="{{ article.link }}" rel="noopener noreferrer" target="_blank">{{ article.title }}</a>
-            {% else %}
-            {{ article.title }}
-            {% endif %}
-          </h3>
+          <h3 class="media-row__title" id="media-title-{{ article.slug }}">{{ article.title }}</h3>
 
           {% if article.characters %}
           <ul class="media-row__chars" aria-label="Characters">
@@ -49,10 +63,54 @@
             <span class="media-row__byline-name">{{ article.byline }}</span>
           </p>
           {% endif %}
+          <p class="media-row__hint" aria-hidden="true">View details</p>
         </div>
+
+        <template id="media-{{ article.slug }}">
+          <div class="media-modal__payload"
+               data-name="{{ article.title }}"
+               data-byline="{{ article.byline or '' }}"
+               data-link="{{ article.link or '' }}"
+               {% if article.cover %}data-cover="{{ SITEURL }}/{{ article.cover }}"{% endif %}
+               data-chars="{{ article.characters or '' }}"
+               data-fav="{% if article.tags %}{% for tag in article.tags %}{% if tag.slug == 'favourite' %}1{% endif %}{% endfor %}{% endif %}"
+               data-official="{% if article.tags %}{% for tag in article.tags %}{% if tag.slug == 'official' %}1{% endif %}{% endfor %}{% endif %}">
+            <div class="media-modal__fulltext">
+              {% if article.content %}
+                {{ article.content }}
+              {% elif article.summary %}
+                <p>{{ article.summary|striptags }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </template>
       </li>
       {% endfor %}
     </ul>
+
+    <div class="media-modal" id="media-modal" role="dialog" aria-modal="true" aria-labelledby="media-modal-title" hidden>
+      <div class="media-modal__backdrop" data-media-close tabindex="-1"></div>
+      <div class="media-modal__panel" role="document">
+        <button type="button" class="media-modal__close" data-media-close aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <div class="media-modal__layout">
+          <div class="media-modal__art">
+            <img id="media-modal-img" src="" alt="" width="320" height="460">
+          </div>
+          <div class="media-modal__copy">
+            <div class="media-modal__flags" id="media-modal-flags"></div>
+            <h3 class="media-modal__title" id="media-modal-title"></h3>
+            <ul class="media-modal__chars" id="media-modal-chars" aria-label="Characters"></ul>
+            <p class="media-modal__byline" id="media-modal-byline"></p>
+            <div class="media-modal__body prose" id="media-modal-body"></div>
+            <p class="media-modal__link-wrap" id="media-modal-link-wrap" hidden>
+              <a class="btn btn--primary" id="media-modal-link" href="#" rel="noopener noreferrer" target="_blank">Open source link</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
     {% else %}
     <p class="empty-state">No media entries yet.</p>
     {% endif %}

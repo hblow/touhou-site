@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Reimu
 Byline: Azuma Aya
+Cover: images/media/spell-azuma-aya.webp
 Summary: Manga from my reading list.
 Link: https://mangadex.org/title/fe7b3f1e-7832-4f91-96d4-b15d64cabffe/touhou-spell
 

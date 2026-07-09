@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Kosuzu, Sekibanki, Wakasagihime
 Byline: Fuuzasa
+Cover: images/media/fuuzasa-kosuzu-sekibanki.webp
 Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/20310
 

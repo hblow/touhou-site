@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Tags: official
 Byline: ZUN + Various Artists
+Cover: images/media/whispered-oracle.webp
 Summary: official
 Link: https://mangadex.org/title/2447d41e-8edf-4d3c-a686-1dfd077b8d55/touhou-genson-kamikuji-whispered-oracle-of-hakurei-shrine
 

@@ -7,6 +7,7 @@ Read_Status: completed
 Tags: favourite
 Characters: Marisa, Alice, Patchouli
 Byline: Yakumi Sarai
+Cover: images/media/magic-of-isolation.webp
 Summary: ★ favourite
 Link: https://dynasty-scans.com/chapters/magic_of_isolation
 

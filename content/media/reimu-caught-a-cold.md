@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Reimu
 Byline: Homonoya (Hisha)
+Cover: images/media/reimu-caught-a-cold.webp
 Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/26828
 

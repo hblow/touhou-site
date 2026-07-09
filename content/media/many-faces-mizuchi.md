@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Mizuchi
 Byline: youyou20
+Cover: images/media/many-faces-mizuchi.webp
 Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/24193
 

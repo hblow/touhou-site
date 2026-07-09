@@ -6,6 +6,7 @@ Media_Type: manga
 Read_Status: completed
 Characters: Flandre, Jacket Girl
 Byline: Ishikawa Spare Rib
+Cover: images/media/false-image-un-owen.webp
 Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/21334
 
