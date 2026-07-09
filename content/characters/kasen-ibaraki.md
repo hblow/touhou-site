@@ -4,7 +4,7 @@ Category: characters
 Date: 2026-07-08
 Rank: 3
 Portrait: images/characters/kasen.webp
-Tags: favourite
-Summary: #3 favourite.
+Tags: hermit, wild-and-horned-hermit
+Summary: Bandaged hermit with a mountain of secrets — Wild and Horned Hermit sealed the deal.
 
-#3 on my favourites list.
+Number three thanks to long-form Kasen. WaHH’s slow burn, animal companions, and “hermit who is definitely more than a hermit” vibe stick with me more than most incident-of-the-week characters. Official manga Kasen is peak.

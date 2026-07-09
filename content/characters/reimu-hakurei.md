@@ -4,7 +4,7 @@ Category: characters
 Date: 2026-07-08
 Rank: 5
 Portrait: images/characters/reimu.webp
-Tags: favourite
-Summary: #5 for now — also contending with Onozuka Komachi and Houraisan Kaguya (order still undecided).
+Tags: shrine-maiden, protagonist
+Summary: Lazy shrine maiden who still solves every incident — holding the fifth seat for now.
 
-#5 slot is shared in my notes with Komachi and Kaguya; Reimu is listed here until I settle the order.
+Number five is a soft slot. Reimu’s here as the default face of the series — floaty danmaku, dry humour, Hakurei duty. In my notes she’s still tied with Onozuka Komachi and Houraisan Kaguya for this rank; order may shuffle once I stop second-guessing it.
