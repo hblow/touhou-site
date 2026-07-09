@@ -502,7 +502,7 @@
           var dx = player.x - e.mesh.position.x;
           var dy = player.y - e.mesh.position.y;
           var dz = player.z - e.mesh.position.z;
-          var d = Math.hypot(dx, dy, dz) || 1;
+          var d = Math.sqrt(dx*dx+dy*dy+dz*dz) || 1;
           addBullet(e.mesh.position.x, e.mesh.position.y, e.mesh.position.z,
             (dx / d) * 6, (dy / d) * 6, (dz / d) * 6 + 4, cfg.bulletA, 0.2);
         } else if (e.pattern === 1 && e.t > 0.7) {
@@ -553,7 +553,7 @@
         var dx2 = player.x - boss.mesh.position.x;
         var dy2 = player.y - boss.mesh.position.y;
         var dz2 = 0 - boss.mesh.position.z;
-        var d2 = Math.hypot(dx2, dy2, dz2) || 1;
+        var d2 = Math.sqrt(dx2*dx2+dy2*dy2+dz2*dz2) || 1;
         addBullet(boss.mesh.position.x, boss.mesh.position.y, boss.mesh.position.z,
           (dx2 / d2) * 9, (dy2 / d2) * 9, (dz2 / d2) * 9, 0xffffff, 0.24);
       }
@@ -615,7 +615,7 @@
       bl.mesh.position.z += bl.vz * dt;
       var pos = bl.mesh.position;
       // graze near player plane (z near 0)
-      var dist = Math.hypot(pos.x - player.x, pos.y - player.y, pos.z - player.z);
+      var dist = Math.sqrt((pos.x-player.x)*(pos.x-player.x)+(pos.y-player.y)*(pos.y-player.y)+(pos.z-player.z)*(pos.z-player.z));
       if (!bl.grazed && dist < 1.3 && dist > 0.38) {
         bl.grazed = true;
         graze++;
