@@ -50,10 +50,13 @@ jobs:
                 || { echo "missing disclaimer in $f"; exit 1; }
             done
           fi
-          # Content sanity
-          grep -qi 'Top 5 Characters' output/index.html
+          # Content sanity (match live section copy)
+          grep -qiE 'Top Favourites|Top 5 Characters|Hinanawi Tenshi' output/index.html
+          grep -qi 'Danmaku Demo' output/index.html
+          grep -qi 'Manga' output/index.html
           test -f output/theme/css/base.css
           test -f output/theme/js/clouds.js
+          test -f output/theme/js/danmaku.js
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
