@@ -5,8 +5,10 @@ Date: 2025-01-03
 Media_Type: manga
 Read_Status: completed
 Tags: favourite
-Summary: ★ favourite — Marisa, Alice, Patchouli. By Yakumi Sarai.
+Characters: Marisa, Alice, Patchouli
+Byline: Yakumi Sarai
+Summary: ★ favourite
 Link: https://dynasty-scans.com/chapters/magic_of_isolation
 
-★ favourite — Marisa, Alice, Patchouli. By Yakumi Sarai.
+Magic of Isolation — Yakumi Sarai
 https://dynasty-scans.com/chapters/magic_of_isolation

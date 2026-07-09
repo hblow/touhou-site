@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-12
 Media_Type: manga
 Read_Status: completed
-Summary: Flandre, Akyuu. By Takitarou and Tohonifun.
+Characters: Flandre, Akyuu
+Byline: Takitarou and Tohonifun
+Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/chapters/offsetting_inferno
 
-Flandre, Akyuu. By Takitarou and Tohonifun.
+Offsetting Inferno — Takitarou and Tohonifun
 https://dynasty-scans.com/chapters/offsetting_inferno

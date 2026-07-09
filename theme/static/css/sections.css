@@ -1001,4 +1001,44 @@ html.char-modal-open body {
   color: var(--ink-muted);
 }
 
-
+/* Media character tags + author byline */
+.media-row__chars {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.char-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--peach-soft);
+  background: rgba(255, 176, 137, 0.12);
+  border: 1px solid rgba(255, 176, 137, 0.28);
+  letter-spacing: 0.01em;
+}
+.media-row__byline {
+  margin: 0.55rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.55rem;
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+}
+.media-row__byline-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(154, 175, 196, 0.75);
+}
+.media-row__byline-name {
+  color: #d7e4f2;
+}

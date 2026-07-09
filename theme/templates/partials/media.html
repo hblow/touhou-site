@@ -3,7 +3,7 @@
     <header class="section__header">
       <p class="section__kicker" lang="ja">読んだもの</p>
       <h2 id="media-heading">Manga I&rsquo;ve Read</h2>
-      <p class="section__lede">From my list — ★ favourite, ! official where noted.</p>
+      <p class="section__lede">From my list — character tags and author kept separate. ★ = favourite.</p>
     </header>
 
     {% set items = articles|selectattr('category.slug', 'equalto', 'media')|list %}
@@ -23,6 +23,7 @@
               {% endfor %}
             {% endif %}
           </div>
+
           <h3 class="media-row__title">
             {% if article.link %}
             <a href="{{ article.link }}" rel="noopener noreferrer" target="_blank">{{ article.title }}</a>
@@ -30,8 +31,23 @@
             {{ article.title }}
             {% endif %}
           </h3>
-          {% if article.summary %}
-          <p class="media-row__note">{{ article.summary|striptags }}</p>
+
+          {% if article.characters %}
+          <ul class="media-row__chars" aria-label="Characters">
+            {% for name in article.characters.split(',') %}
+              {% set n = name|trim %}
+              {% if n %}
+              <li class="char-tag">{{ n }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          {% if article.byline %}
+          <p class="media-row__byline">
+            <span class="media-row__byline-label">Author</span>
+            <span class="media-row__byline-name">{{ article.byline }}</span>
+          </p>
           {% endif %}
         </div>
       </li>

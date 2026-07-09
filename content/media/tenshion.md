@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-05
 Media_Type: manga
 Read_Status: completed
-Summary: Tenshi, Shion. By mikagami Hiyori.
+Characters: Tenshi, Shion
+Byline: mikagami Hiyori
+Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/13915
 
-Tenshi, Shion. By mikagami Hiyori.
+TenShion — mikagami Hiyori
 https://danbooru.donmai.us/pools/13915

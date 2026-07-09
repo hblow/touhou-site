@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-23
 Media_Type: manga
 Read_Status: completed
-Summary: Orin, Mizuchi. By Fuuzasa.
+Characters: Orin, Mizuchi
+Byline: Fuuzasa
+Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/27245
 
-Orin, Mizuchi. By Fuuzasa.
+Dance For Me Spirit — Fuuzasa
 https://danbooru.donmai.us/pools/27245

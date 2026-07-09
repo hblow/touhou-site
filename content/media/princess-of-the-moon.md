@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-19
 Media_Type: manga
 Read_Status: completed
-Summary: Kaguya. By Amida Kuzu.
+Characters: Kaguya
+Byline: Amida Kuzu
+Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/chapters/princess_of_the_moon
 
-Kaguya. By Amida Kuzu.
+Princess of the Moon — Amida Kuzu
 https://dynasty-scans.com/chapters/princess_of_the_moon

@@ -5,8 +5,9 @@ Date: 2025-01-07
 Media_Type: manga
 Read_Status: completed
 Tags: official
-Summary: official — ZUN + various artists. By ZUN + Various.
+Byline: ZUN + Various Artists
+Summary: official
 Link: https://mangadex.org/title/2447d41e-8edf-4d3c-a686-1dfd077b8d55/touhou-genson-kamikuji-whispered-oracle-of-hakurei-shrine
 
-official — ZUN + various artists. By ZUN + Various.
+Whispered Oracle of Hakurei Shrine — ZUN + Various Artists
 https://mangadex.org/title/2447d41e-8edf-4d3c-a686-1dfd077b8d55/touhou-genson-kamikuji-whispered-oracle-of-hakurei-shrine

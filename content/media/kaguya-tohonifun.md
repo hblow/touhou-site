@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-11
 Media_Type: manga
 Read_Status: completed
-Summary: Kaguya. By Tohonifun.
+Characters: Kaguya
+Byline: Tohonifun
+Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/chapters/kaguya
 
-Kaguya. By Tohonifun.
+Kaguya — Tohonifun
 https://dynasty-scans.com/chapters/kaguya

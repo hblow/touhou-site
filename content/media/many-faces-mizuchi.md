@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-21
 Media_Type: manga
 Read_Status: completed
-Summary: Mizuchi. By youyou20.
+Characters: Mizuchi
+Byline: youyou20
+Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/24193
 
-Mizuchi. By youyou20.
+The Many Faces of Miyadeguchi Mizuchi!? — youyou20
 https://danbooru.donmai.us/pools/24193

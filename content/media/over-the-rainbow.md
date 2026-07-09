@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-27
 Media_Type: manga
 Read_Status: completed
-Summary: Tenshi, Kogasa. By Yappa Muri.
+Characters: Tenshi, Kogasa
+Byline: Yappa Muri
+Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/14389
 
-Tenshi, Kogasa. By Yappa Muri.
+Over the Rainbow — Yappa Muri
 https://danbooru.donmai.us/pools/14389

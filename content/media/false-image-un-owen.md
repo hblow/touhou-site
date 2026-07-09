@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-26
 Media_Type: manga
 Read_Status: completed
-Summary: Flandre, Jacket Girl. By Ishikawa Spare Rib.
+Characters: Flandre, Jacket Girl
+Byline: Ishikawa Spare Rib
+Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/21334
 
-Flandre, Jacket Girl. By Ishikawa Spare Rib.
+The False Image of U.N. Owen — Ishikawa Spare Rib
 https://danbooru.donmai.us/pools/21334

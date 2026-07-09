@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-17
 Media_Type: manga
 Read_Status: completed
-Summary: Reimu. By Homonoya (Hisha).
+Characters: Reimu
+Byline: Homonoya (Hisha)
+Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/26828
 
-Reimu. By Homonoya (Hisha).
+Reimu's Caught a Cold! — Homonoya (Hisha)
 https://danbooru.donmai.us/pools/26828

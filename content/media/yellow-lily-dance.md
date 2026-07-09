@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-01
 Media_Type: manga
 Read_Status: completed
-Summary: Tenshi, Shion. By Miata.
+Characters: Tenshi, Shion
+Byline: Miata
+Summary: Manga from my reading list.
 Link: https://danbooru.donmai.us/pools/19194
 
-Tenshi, Shion. By Miata.
+Yellow Lily, Dance with Misfortune — Miata
 https://danbooru.donmai.us/pools/19194

@@ -4,8 +4,10 @@ Category: media
 Date: 2025-01-20
 Media_Type: manga
 Read_Status: completed
-Summary: Mokou. By Amida Kuzu.
+Characters: Mokou
+Byline: Amida Kuzu
+Summary: Manga from my reading list.
 Link: https://dynasty-scans.com/chapters/glutton_mokou
 
-Mokou. By Amida Kuzu.
+Glutton Mokou — Amida Kuzu
 https://dynasty-scans.com/chapters/glutton_mokou
