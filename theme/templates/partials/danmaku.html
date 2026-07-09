@@ -5,18 +5,24 @@
         <p class="section__kicker" lang="ja">弾幕</p>
         <h2 id="demo-heading">幻想デモ · Danmaku</h2>
         <p class="section__lede">
-          A Touhou-styled browser stage — solo clear, or link up with someone for online co-op.
-          Original homage (not a port). Netplay is peer-to-peer via PeerJS.
+          Classic 2D stage with optional online co-op, plus a 3D corridor homage
+          (two stages) inspired by old-school Touhou-in-3D experiments. Original code — not a port.
         </p>
       </div>
     </header>
 
-    <div id="danmaku-demo" class="th-shell">
+    <div class="th-dim" role="group" aria-label="Dimension">
+      <button type="button" class="th-dim__btn is-active" data-dim="2d" id="th-dim-2d">2D Stage</button>
+      <button type="button" class="th-dim__btn" data-dim="3d" id="th-dim-3d">3D Corridor</button>
+    </div>
+
+    <!-- ========== 2D ========== -->
+    <div id="danmaku-demo" class="th-shell" data-shell="2d">
       <div class="th-cabinet" data-th-cabinet>
         <div class="th-cabinet__bezel">
           <div class="th-cabinet__titlebar">
             <span class="th-cabinet__logo" lang="ja">東方風</span>
-            <span class="th-cabinet__subtitle">Celestial Peak Stage</span>
+            <span class="th-cabinet__subtitle">Celestial Peak · 2D</span>
             <span class="th-cabinet__diff" id="th-diff-label">NORMAL</span>
           </div>
 
@@ -24,7 +30,7 @@
             <div class="th-playfield-wrap">
               <canvas id="danmaku-canvas" width="384" height="448"
                       role="img"
-                      aria-label="Danmaku playfield. Focus the cabinet and use keyboard controls."
+                      aria-label="2D danmaku playfield"
                       tabindex="0"></canvas>
               <div class="th-playfield-vignette" aria-hidden="true"></div>
               <div class="th-spell" id="th-spell" hidden>
@@ -78,13 +84,17 @@
 
       <div class="th-side">
         <div class="th-mode">
-          <h3 class="th-side__title">Mode</h3>
+          <h3 class="th-side__title">2D Mode</h3>
           <div class="th-mode__grid" role="group" aria-label="Game mode">
             <button type="button" class="th-mode__btn is-active" data-mode="solo" id="th-mode-solo">Solo</button>
             <button type="button" class="th-mode__btn" data-mode="host" id="th-mode-host">Host room</button>
             <button type="button" class="th-mode__btn" data-mode="join" id="th-mode-join">Join room</button>
             <button type="button" class="th-mode__btn" data-mode="quick" id="th-mode-quick">Quick match</button>
           </div>
+          <label class="th-check">
+            <input type="checkbox" id="th-infinite-2d">
+            <span>Infinite lives</span>
+          </label>
         </div>
 
         <div class="th-net" id="th-net-panel">
@@ -98,7 +108,7 @@
             <input type="text" id="th-room" maxlength="6" placeholder="AB12XY" autocomplete="off" spellcheck="false">
           </label>
           <div class="th-net__actions">
-            <button type="button" class="btn btn--primary" id="th-net-go">Connect</button>
+            <button type="button" class="btn btn--primary" id="th-net-go">Connect / Start</button>
             <button type="button" class="btn btn--ghost" id="th-net-cancel" hidden>Cancel</button>
           </div>
           <p class="th-net__status" id="th-net-status" role="status">Solo mode — press Z on the playfield to start.</p>
@@ -115,9 +125,79 @@
             <li><kbd>Esc</kbd> Pause (solo)</li>
           </ul>
           <p class="th-help__note">
-            Online co-op uses peer-to-peer (PeerJS). Share a room code, or hit Quick match
-            to pair with whoever else is searching in the same time window.
-            Firewall/VPN can block P2P — room codes are more reliable than quick match.
+            Online co-op is 2D-only (PeerJS). 3D corridor is a separate solo showcase.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 3D ========== -->
+    <div id="danmaku-demo-3d" class="th-shell th-shell--3d" data-shell="3d" hidden>
+      <div class="th-cabinet th-cabinet--3d">
+        <div class="th-cabinet__bezel th-cabinet__bezel--3d">
+          <div class="th-cabinet__titlebar">
+            <span class="th-cabinet__logo" lang="ja">三次元</span>
+            <span class="th-cabinet__subtitle" id="th3d-stage-title">Stage 1 · Cloud Sea Approach</span>
+            <span class="th-cabinet__diff" id="th3d-diff-label">3D</span>
+          </div>
+          <div class="th-cabinet__body th-cabinet__body--3d">
+            <div class="th-playfield-wrap th-playfield-wrap--3d">
+              <canvas id="danmaku-canvas-3d" role="img"
+                      aria-label="3D danmaku corridor"
+                      tabindex="0"></canvas>
+              <div class="th-spell" id="th3d-spell" hidden>
+                <div class="th-spell__bonus">Spell Card Attack</div>
+                <div class="th-spell__name" id="th3d-spell-name"></div>
+              </div>
+              <div class="th-overlay" id="th3d-overlay">
+                <p class="th-overlay__jp" lang="ja" id="th3d-overlay-jp">立体</p>
+                <p class="th-overlay__title" id="th3d-overlay-title">3D CORRIDOR</p>
+                <p class="th-overlay__sub" id="th3d-overlay-sub">Pick a stage, then press Start or Z</p>
+              </div>
+              <div class="th3d-hud" aria-hidden="true">
+                <div><span>SCORE</span><strong id="th3d-score">0</strong></div>
+                <div><span>LIVES</span><strong id="th3d-lives">★★★</strong></div>
+                <div><span>BOMB</span><strong id="th3d-bombs">◆◆</strong></div>
+                <div><span>GRAZE</span><strong id="th3d-graze">0</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="th-side">
+        <div class="th-mode">
+          <h3 class="th-side__title">3D Stage</h3>
+          <div class="th-mode__grid th-mode__grid--stages" role="group" aria-label="Stage select">
+            <button type="button" class="th-mode__btn is-active" data-stage="1" id="th3d-stage1">
+              1 · Cloud Sea
+            </button>
+            <button type="button" class="th-mode__btn" data-stage="2" id="th3d-stage2">
+              2 · Scarlet Abyss
+            </button>
+          </div>
+          <label class="th-check">
+            <input type="checkbox" id="th3d-infinite">
+            <span>Infinite lives</span>
+          </label>
+          <div class="th-net__actions" style="margin-top:0.75rem">
+            <button type="button" class="btn btn--primary" id="th3d-start">Start 3D stage</button>
+          </div>
+          <p class="th-net__status" id="th3d-status" role="status">Homage to old Touhou-in-3D fangame vibes — fly the corridor, graze the orbs.</p>
+        </div>
+
+        <div class="th-help">
+          <h3 class="th-side__title">3D Controls</h3>
+          <ul class="th-help__list">
+            <li><kbd>↑↓←→</kbd> / <kbd>WASD</kbd> Strafe in plane</li>
+            <li><kbd>Shift</kbd> Focus (slow)</li>
+            <li><kbd>Z</kbd> / <kbd>Space</kbd> Shot</li>
+            <li><kbd>X</kbd> Bomb</li>
+            <li><kbd>Esc</kbd> Pause</li>
+          </ul>
+          <p class="th-help__note">
+            <strong>Stage 1</strong> — peach cloud sea, fairies, celestial mid-boss.<br>
+            <strong>Stage 2</strong> — scarlet storm corridor, denser rings, final keystone spell.
           </p>
         </div>
       </div>

@@ -71,6 +71,7 @@
   var localInputQueue = Object.create(null);
   var waitingForPeer = false;
   var matchmaking = false;
+  var infiniteLives = false;
   var hiStored = 0;
   try { hiStored = parseInt(localStorage.getItem("th-hiscore") || "0", 10) || 0; } catch (e) {}
   hiScore = hiStored;
@@ -130,7 +131,7 @@
   function updateHUD() {
     if (el.score) el.score.textContent = pad9(score);
     if (el.hiscore) el.hiscore.textContent = pad9(Math.max(hiScore, score));
-    if (el.lives) el.lives.textContent = "★".repeat(Math.max(0, lives)) || "—";
+    if (el.lives) el.lives.textContent = infiniteLives ? "∞" : ("★".repeat(Math.max(0, lives)) || "—");
     if (el.bombs) el.bombs.textContent = "◆".repeat(Math.max(0, bombs)) || "—";
     if (el.power) el.power.textContent = power.toFixed(2);
     if (el.graze) el.graze.textContent = String(graze);
@@ -154,7 +155,7 @@
     seedRng(seed || (Date.now() & 0xffffffff));
     frame = 0;
     score = 0; graze = 0; pointItem = 0;
-    lives = 3; bombs = 2; power = 4.0;
+    lives = infiniteLives ? 99 : 3; bombs = 2; power = 4.0;
     spellName = ""; spellTimer = 0; difficulty = 1;
     bullets.length = 0; pBullets.length = 0; enemies.length = 0; particles.length = 0;
     boss = null;
@@ -261,16 +262,20 @@
 
   function killPlayer(p) {
     if (p.invuln > 0 || !p.alive) return;
-    lives--;
     particle(p.x, p.y, "#8ec8f0");
     p.invuln = 150;
     p.x = p === players[0] ? (mode === "online" ? W * 0.35 : W / 2) : W * 0.65;
     p.y = H - 64;
     bullets.length = 0;
+    if (infiniteLives) {
+      // casual: keep flying
+      updateHUD();
+      return;
+    }
+    lives--;
     if (lives <= 0) {
       lives = 0;
       p.alive = false;
-      // game over if all local-relevant players dead
       var any = players.some(function (pl) { return pl.alive; });
       if (!any || mode === "solo") {
         state = STATE.DEAD;
@@ -1045,6 +1050,8 @@
 
   function startSolo() {
     destroyPeer();
+    var inf = document.getElementById("th-infinite-2d");
+    infiniteLives = !!(inf && inf.checked);
     mode = "solo";
     state = STATE.PLAY;
     hideOverlay();
