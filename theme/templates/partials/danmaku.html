@@ -3,37 +3,123 @@
     <header class="section__header section__header--split">
       <div>
         <p class="section__kicker" lang="ja">弾幕</p>
-        <h2 id="demo-heading">Danmaku Demo</h2>
+        <h2 id="demo-heading">幻想デモ · Danmaku</h2>
         <p class="section__lede">
-          A browser mini-stage inspired by the classic Touhou shooters — focus shot,
-          graze, bombs, and a Tenshi-flavoured spellcard finale. Original code; not a port.
+          A Touhou-styled browser stage — solo clear, or link up with someone for online co-op.
+          Original homage (not a port). Netplay is peer-to-peer via PeerJS.
         </p>
       </div>
     </header>
 
-    <div id="danmaku-demo" class="danmaku">
-      <div class="danmaku__stage">
-        <canvas id="danmaku-canvas" width="384" height="448" role="img"
-                aria-label="Danmaku gameplay canvas. Press Z to start."></canvas>
-        <div class="danmaku__frame" aria-hidden="true"></div>
-      </div>
-      <div class="danmaku__panel">
-        <h3 class="danmaku__panel-title">Controls</h3>
-        <ul class="danmaku__controls">
-          <li><kbd>←↑↓→</kbd> / <kbd>WASD</kbd> Move</li>
-          <li><kbd>Shift</kbd> Focus (slow + hitbox)</li>
-          <li><kbd>Z</kbd> / <kbd>Space</kbd> Shoot · start</li>
-          <li><kbd>X</kbd> Bomb</li>
-          <li><kbd>P</kbd> / <kbd>Esc</kbd> Pause</li>
-          <li>Touch: drag to move, auto-focus fire</li>
-        </ul>
-        <div class="danmaku__actions">
-          <button type="button" class="btn btn--primary" id="danmaku-start">Start stage</button>
+    <div id="danmaku-demo" class="th-shell">
+      <div class="th-cabinet" data-th-cabinet>
+        <div class="th-cabinet__bezel">
+          <div class="th-cabinet__titlebar">
+            <span class="th-cabinet__logo" lang="ja">東方風</span>
+            <span class="th-cabinet__subtitle">Celestial Peak Stage</span>
+            <span class="th-cabinet__diff" id="th-diff-label">NORMAL</span>
+          </div>
+
+          <div class="th-cabinet__body">
+            <div class="th-playfield-wrap">
+              <canvas id="danmaku-canvas" width="384" height="448"
+                      role="img"
+                      aria-label="Danmaku playfield. Focus the cabinet and use keyboard controls."
+                      tabindex="0"></canvas>
+              <div class="th-playfield-vignette" aria-hidden="true"></div>
+              <div class="th-spell" id="th-spell" hidden>
+                <div class="th-spell__bonus">Spell Card Attack</div>
+                <div class="th-spell__name" id="th-spell-name"></div>
+              </div>
+              <div class="th-overlay" id="th-overlay">
+                <p class="th-overlay__jp" lang="ja" id="th-overlay-jp">霊撃</p>
+                <p class="th-overlay__title" id="th-overlay-title">PLAYER SELECT</p>
+                <p class="th-overlay__sub" id="th-overlay-sub">Choose a mode on the right, then press Z</p>
+              </div>
+            </div>
+
+            <aside class="th-status" aria-label="Stage status">
+              <div class="th-status__block">
+                <div class="th-status__label">HiScore</div>
+                <div class="th-status__value th-status__value--hi" id="th-hiscore">000000000</div>
+              </div>
+              <div class="th-status__block">
+                <div class="th-status__label">Score</div>
+                <div class="th-status__value" id="th-score">000000000</div>
+              </div>
+              <div class="th-status__block">
+                <div class="th-status__label">Player</div>
+                <div class="th-status__icons" id="th-lives" aria-live="polite">★★★</div>
+              </div>
+              <div class="th-status__block">
+                <div class="th-status__label">Bomb</div>
+                <div class="th-status__icons th-status__icons--bomb" id="th-bombs">◆◆</div>
+              </div>
+              <div class="th-status__block">
+                <div class="th-status__label">Power</div>
+                <div class="th-status__value th-status__value--sm" id="th-power">4.00</div>
+              </div>
+              <div class="th-status__block">
+                <div class="th-status__label">Graze</div>
+                <div class="th-status__value th-status__value--sm" id="th-graze">0</div>
+              </div>
+              <div class="th-status__block">
+                <div class="th-status__label">Point</div>
+                <div class="th-status__value th-status__value--sm" id="th-point">0</div>
+              </div>
+              <div class="th-status__portrait" aria-hidden="true">
+                <img src="{{ SITEURL }}/images/characters/tenshi.webp" alt="" width="120" height="120">
+                <span lang="ja">比那名居 天子</span>
+              </div>
+            </aside>
+          </div>
         </div>
-        <p class="danmaku__note">
-          Survive fairy waves, then face a three-phase celestial boss pattern.
-          Graze bullets for points. This is a fan-made homage — mechanics only.
-        </p>
+      </div>
+
+      <div class="th-side">
+        <div class="th-mode">
+          <h3 class="th-side__title">Mode</h3>
+          <div class="th-mode__grid" role="group" aria-label="Game mode">
+            <button type="button" class="th-mode__btn is-active" data-mode="solo" id="th-mode-solo">Solo</button>
+            <button type="button" class="th-mode__btn" data-mode="host" id="th-mode-host">Host room</button>
+            <button type="button" class="th-mode__btn" data-mode="join" id="th-mode-join">Join room</button>
+            <button type="button" class="th-mode__btn" data-mode="quick" id="th-mode-quick">Quick match</button>
+          </div>
+        </div>
+
+        <div class="th-net" id="th-net-panel">
+          <h3 class="th-side__title">Online</h3>
+          <label class="th-field">
+            <span>Your name</span>
+            <input type="text" id="th-name" maxlength="12" placeholder="Reimu" autocomplete="nickname">
+          </label>
+          <label class="th-field" id="th-room-field">
+            <span>Room code</span>
+            <input type="text" id="th-room" maxlength="6" placeholder="AB12XY" autocomplete="off" spellcheck="false">
+          </label>
+          <div class="th-net__actions">
+            <button type="button" class="btn btn--primary" id="th-net-go">Connect</button>
+            <button type="button" class="btn btn--ghost" id="th-net-cancel" hidden>Cancel</button>
+          </div>
+          <p class="th-net__status" id="th-net-status" role="status">Solo mode — press Z on the playfield to start.</p>
+          <p class="th-net__peers" id="th-net-peers"></p>
+        </div>
+
+        <div class="th-help">
+          <h3 class="th-side__title">Controls</h3>
+          <ul class="th-help__list">
+            <li><kbd>↑↓←→</kbd> Move</li>
+            <li><kbd>Shift</kbd> Focus</li>
+            <li><kbd>Z</kbd> Shot · confirm</li>
+            <li><kbd>X</kbd> Bomb</li>
+            <li><kbd>Esc</kbd> Pause (solo)</li>
+          </ul>
+          <p class="th-help__note">
+            Online co-op uses peer-to-peer (PeerJS). Share a room code, or hit Quick match
+            to pair with whoever else is searching in the same time window.
+            Firewall/VPN can block P2P — room codes are more reliable than quick match.
+          </p>
+        </div>
       </div>
     </div>
   </div>
