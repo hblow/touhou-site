@@ -35,8 +35,8 @@
       dir: 0xffc8a0,
       railColor: 0xffffff,
       enemyColor: 0x88ccff,
-      bulletA: 0xff88aa,
-      bulletB: 0x88ddff,
+      bulletA: 0xff3366,
+      bulletB: 0x44eeff,
       bossColor: 0xffd0a0,
       duration: 55,
       bossAt: 32
@@ -49,8 +49,8 @@
       dir: 0xffaa66,
       railColor: 0xff6688,
       enemyColor: 0xff6688,
-      bulletA: 0xff4050,
-      bulletB: 0xffd060,
+      bulletA: 0xff2040,
+      bulletB: 0xffee66,
       bossColor: 0xff8866,
       duration: 70,
       bossAt: 38
@@ -78,6 +78,8 @@
   var animId = 0;
   var threeFailed = false;
   var bossSpawned = false;
+  var bombWaves = [];
+  var stageClearTimer = 0;
 
   function setStatus(m) { if (el.status) el.status.textContent = m; }
   function showOverlay(t, s, jp) {
@@ -119,11 +121,13 @@
 
   function disposeObject(obj) {
     if (!obj) return;
-    if (obj.geometry) obj.geometry.dispose();
-    if (obj.material) {
-      if (Array.isArray(obj.material)) obj.material.forEach(function (m) { m.dispose(); });
-      else obj.material.dispose();
-    }
+    obj.traverse(function (c) {
+      if (c.geometry) c.geometry.dispose();
+      if (c.material) {
+        if (Array.isArray(c.material)) c.material.forEach(function (m) { m.dispose(); });
+        else c.material.dispose();
+      }
+    });
   }
 
   function clearWorld() {
@@ -132,6 +136,8 @@
     pBullets.forEach(function (b) { scene.remove(b.mesh); disposeObject(b.mesh); });
     particles.forEach(function (p) { scene.remove(p.mesh); disposeObject(p.mesh); });
     if (boss) { scene.remove(boss.mesh); disposeObject(boss.mesh); boss = null; }
+    bombWaves.forEach(function (w) { scene.remove(w.mesh); disposeObject(w.mesh); });
+    bombWaves = [];
     enemies = []; bullets = []; pBullets = []; particles = [];
   }
 
@@ -271,14 +277,27 @@
   }
 
   function addBullet(x, y, z, vx, vy, vz, color, r) {
-    r = r || 0.22;
-    var mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(r, 10, 10),
+    r = (r || 0.28) * 1.35;
+    var g = new THREE.Group();
+    // outer glow shell
+    var glow = new THREE.Mesh(
+      new THREE.SphereGeometry(r * 1.75, 12, 12),
+      new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.35, depth: THREE.FrontSide })
+    );
+    // solid mid shell
+    var shell = new THREE.Mesh(
+      new THREE.SphereGeometry(r, 12, 12),
       new THREE.MeshBasicMaterial({ color: color })
     );
-    mesh.position.set(x, y, z);
-    scene.add(mesh);
-    bullets.push({ mesh: mesh, vx: vx, vy: vy, vz: vz, r: r, grazed: false });
+    // white core for danmaku readability
+    var core = new THREE.Mesh(
+      new THREE.SphereGeometry(r * 0.45, 10, 10),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    g.add(glow); g.add(shell); g.add(core);
+    g.position.set(x, y, z);
+    scene.add(g);
+    bullets.push({ mesh: g, vx: vx, vy: vy, vz: vz, r: r, grazed: false, color: color });
   }
 
   function firePlayer(focus) {
@@ -287,7 +306,7 @@
     var cols = [0xa0e8ff, 0xffffff];
     for (var i = 0; i < (focus ? 1 : 2); i++) {
       var mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(0.12, 8, 8),
+        new THREE.SphereGeometry(0.18, 10, 10),
         new THREE.MeshBasicMaterial({ color: cols[i % 2] })
       );
       mesh.position.set(player.x + (focus ? 0 : (i ? 0.25 : -0.25)), player.y, player.z - 0.8);
@@ -299,19 +318,71 @@
   function bomb() {
     if (bombs <= 0) return;
     bombs--;
-    invuln = 1.6;
-    camShake = 0.45;
-    // clear nearby enemy bullets
-    for (var i = bullets.length - 1; i >= 0; i--) {
-      scene.remove(bullets[i].mesh);
-      disposeObject(bullets[i].mesh);
-      bullets.splice(i, 1);
-    }
-    enemies.forEach(function (e) { e.hp -= 25; });
-    if (boss) boss.hp -= 40;
+    invuln = 1.8;
+    camShake = 0.55;
+    // Expanding 3D shockwave sphere
+    var mat = new THREE.MeshBasicMaterial({
+      color: 0xffe080,
+      transparent: true,
+      opacity: 0.45,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    var mesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 18), mat);
+    mesh.position.set(player.x, player.y, player.z);
+    scene.add(mesh);
+    // bright ring
+    var ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.6, 0.08, 8, 40),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 })
+    );
+    ring.rotation.x = Math.PI / 2;
+    mesh.add(ring);
+    bombWaves.push({
+      mesh: mesh, r: 0.5, maxR: 14, life: 1.1, maxLife: 1.1,
+      hit: {}, bossHits: 0
+    });
     score += 800;
     showSpell('Bomb "Dimensional Seal"');
     hud();
+  }
+
+  function updateBombWaves(dt) {
+    for (var i = bombWaves.length - 1; i >= 0; i--) {
+      var w = bombWaves[i];
+      w.life -= dt;
+      var t = 1 - Math.max(0, w.life) / w.maxLife;
+      w.r = w.maxR * (0.12 + 0.88 * t);
+      w.mesh.scale.setScalar(Math.max(0.01, w.r / 0.5));
+      if (w.mesh.material) w.mesh.material.opacity = 0.5 * (1 - t);
+      // erase bullets inside wave
+      for (var bi = bullets.length - 1; bi >= 0; bi--) {
+        var bl = bullets[bi];
+        if (bl.mesh.position.distanceTo(w.mesh.position) < w.r) {
+          scene.remove(bl.mesh); disposeObject(bl.mesh);
+          bullets.splice(bi, 1);
+          score += 8;
+        }
+      }
+      // damage enemies when first engulfed
+      enemies.forEach(function (e, idx) {
+        if (w.hit[idx]) return;
+        if (e.mesh.position.distanceTo(w.mesh.position) < w.r + e.r) {
+          w.hit[idx] = true;
+          e.hp -= 40;
+          score += 50;
+        }
+      });
+      if (boss && w.bossHits < 4 && boss.mesh.position.distanceTo(w.mesh.position) < w.r + boss.r) {
+        w.bossHits++;
+        boss.hp -= 28;
+        score += 100;
+      }
+      if (w.life <= 0) {
+        scene.remove(w.mesh); disposeObject(w.mesh);
+        bombWaves.splice(i, 1);
+      }
+    }
   }
 
   function hitPlayer() {
@@ -349,7 +420,7 @@
     player.x = 0; player.y = 0; player.z = 0;
     score = 0; graze = 0; bombs = 2;
     lives = infinite ? 99 : 3;
-    invuln = 1.5; shotCd = 0; spellT = 0; time = 0; boss = null; bossSpawned = false;
+    invuln = 1.5; shotCd = 0; spellT = 0; time = 0; boss = null; bossSpawned = false; stageClearTimer = 0;
     if (el.stageTitle) el.stageTitle.textContent = cfg.name;
     hud();
   }
@@ -490,13 +561,22 @@
         score += stageId === 1 ? 15000 : 30000;
         scene.remove(boss.mesh); disposeObject(boss.mesh);
         boss = null;
+        // clear remaining enemy bullets for the fanfare
+        for (var ci = bullets.length - 1; ci >= 0; ci--) {
+          scene.remove(bullets[ci].mesh); disposeObject(bullets[ci].mesh);
+        }
+        bullets = [];
+        if (stageId === 1) {
+          state = "clear";
+          showOverlay("STAGE 1 CLEAR", "Score " + score + " · Entering Scarlet Abyss…", "クリア");
+          setStatus("Stage 1 clear — auto-starting Stage 2…");
+          hud();
+          stageClearTimer = 2.4;
+          return;
+        }
         state = "clear";
-        showOverlay(
-          stageId === 1 ? "STAGE 1 CLEAR" : "STAGE 2 CLEAR",
-          stageId === 1 ? "Score " + score + " · Select Stage 2 when ready" : "Score " + score + " · Heaven and abyss conquered",
-          "クリア"
-        );
-        setStatus("Stage clear! Score " + score);
+        showOverlay("STAGE 2 CLEAR", "Score " + score + " · Heaven and abyss conquered", "クリア");
+        setStatus("Stage 2 clear! Score " + score);
         hud();
         return;
       }
@@ -570,8 +650,42 @@
 
     // stage timeout without boss kill still ok — if past duration and no boss, clear
     if (!boss && time > cfg.duration && state === "play") {
-      state = "clear";
-      showOverlay("STAGE CLEAR", "Score " + score, "クリア");
+      if (stageId === 1) {
+        state = "clear";
+        showOverlay("STAGE 1 CLEAR", "Score " + score + " · Entering Scarlet Abyss…", "クリア");
+        stageClearTimer = 2.4;
+      } else {
+        state = "clear";
+        showOverlay("STAGE CLEAR", "Score " + score, "クリア");
+      }
+    }
+
+    // Auto-advance Stage 1 → 2
+    if (state === "clear" && stageClearTimer > 0) {
+      stageClearTimer -= dt;
+      if (stageClearTimer <= 0 && stageId === 1) {
+        stageId = 2;
+        document.querySelectorAll("[data-stage]").forEach(function (b) {
+          b.classList.toggle("is-active", b.getAttribute("data-stage") === "2");
+        });
+        if (el.stageTitle) el.stageTitle.textContent = STAGES[2].name;
+        setStatus("Auto-continuing to Stage 2…");
+        // preserve score across stages
+        var keptScore = score;
+        var keptGraze = graze;
+        var keptBombs = bombs;
+        var keptLives = lives;
+        infinite = !!(el.infinite && el.infinite.checked);
+        resetStage();
+        score = keptScore;
+        graze = keptGraze;
+        bombs = keptBombs;
+        if (!infinite) lives = keptLives;
+        state = "play";
+        hideOverlay();
+        setStatus(STAGES[2].name + (infinite ? " · ∞ lives" : "") + " · score carried over");
+        hud();
+      }
     }
     hud();
   }

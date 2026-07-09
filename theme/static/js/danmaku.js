@@ -61,7 +61,7 @@
     makePlayer(W * 0.62, H - 64, "#ffe6c8", "#4a8ec8")
   ];
 
-  var bullets = [], pBullets = [], enemies = [], particles = [];
+  var bullets = [], pBullets = [], enemies = [], particles = [], bombFX = [];
   var boss = null;
 
   // Net
@@ -157,7 +157,7 @@
     score = 0; graze = 0; pointItem = 0;
     lives = infiniteLives ? 99 : 3; bombs = 2; power = 4.0;
     spellName = ""; spellTimer = 0; difficulty = 1;
-    bullets.length = 0; pBullets.length = 0; enemies.length = 0; particles.length = 0;
+    bullets.length = 0; pBullets.length = 0; enemies.length = 0; particles.length = 0; bombFX.length = 0;
     boss = null;
     players[0] = makePlayer(mode === "online" ? W * 0.35 : W / 2, H - 64, "#e8eef8", "#e05050");
     players[1] = makePlayer(W * 0.65, H - 64, "#ffe6c8", "#4a8ec8");
@@ -190,7 +190,13 @@
   }
 
   function addBullet(x, y, vx, vy, r, color) {
-    bullets.push({ x: x, y: y, vx: vx, vy: vy, r: r || 4, color: color || "#ff6b8a", grazed: false });
+    bullets.push({
+      x: x, y: y, vx: vx, vy: vy,
+      r: (r || 5.5) * 1.15,
+      color: color || "#ff4d6a",
+      core: "#ffffff",
+      grazed: false
+    });
   }
   function aimed(x, y, tx, ty, spd) {
     var dx = tx - x, dy = ty - y, len = Math.hypot(dx, dy) || 1;
@@ -249,15 +255,93 @@
   function bombFrom(p) {
     if (bombs <= 0) return;
     bombs--;
-    p.invuln = Math.max(p.invuln, 100);
-    bullets.length = 0;
-    particle(p.x, p.y, "#ffe6a0");
-    particle(p.x, p.y, "#ffb089");
-    enemies.forEach(function (e) { e.hp -= 45; });
-    if (boss) boss.hp -= 60;
+    p.invuln = Math.max(p.invuln, 120);
+    // Expanding shockwave that clears bullets + damages enemies over time
+    bombFX.push({
+      x: p.x, y: p.y,
+      r: 12, maxR: 240,
+      life: 48, maxLife: 48,
+      hitEnemies: {},
+      bossHit: 0
+    });
+    for (var i = 0; i < 28; i++) {
+      var a = (i / 28) * Math.PI * 2;
+      particles.push({
+        x: p.x, y: p.y,
+        vx: Math.cos(a) * (3 + rand() * 4),
+        vy: Math.sin(a) * (3 + rand() * 4),
+        life: 22 + rand() * 18,
+        color: i % 2 ? "#ffe6a0" : "#ff8a60"
+      });
+    }
     score += 500;
     showSpell('Bomb "Peach Blossom Seal"');
     updateHUD();
+  }
+
+  function updateBombFX() {
+    for (var i = bombFX.length - 1; i >= 0; i--) {
+      var fx = bombFX[i];
+      var t = 1 - fx.life / fx.maxLife;
+      fx.r = fx.maxR * (0.15 + 0.85 * t);
+      fx.life--;
+      // clear enemy bullets inside shockwave
+      for (var b = bullets.length - 1; b >= 0; b--) {
+        var bl = bullets[b];
+        if (Math.hypot(bl.x - fx.x, bl.y - fx.y) < fx.r + bl.r) {
+          particle(bl.x, bl.y, "#fff0c0");
+          bullets.splice(b, 1);
+          score += 5;
+        }
+      }
+      // damage enemies once when engulfed
+      enemies.forEach(function (e, idx) {
+        if (fx.hitEnemies[idx]) return;
+        if (Math.hypot(e.x - fx.x, e.y - fx.y) < fx.r + e.r) {
+          fx.hitEnemies[idx] = true;
+          e.hp -= 55;
+          particle(e.x, e.y, "#ffd070");
+          score += 40;
+        }
+      });
+      if (boss && fx.bossHit < 3 && Math.hypot(boss.x - fx.x, boss.y - fx.y) < fx.r + boss.r) {
+        fx.bossHit++;
+        boss.hp -= 35;
+        particle(boss.x, boss.y, "#ffe6a0");
+        score += 80;
+      }
+      if (fx.life <= 0) bombFX.splice(i, 1);
+    }
+  }
+
+  function drawBombFX() {
+    bombFX.forEach(function (fx) {
+      var alpha = Math.max(0.15, fx.life / fx.maxLife);
+      // outer glow
+      ctx.beginPath();
+      ctx.strokeStyle = "rgba(255, 220, 120, " + (0.55 * alpha) + ")";
+      ctx.lineWidth = 10;
+      ctx.arc(fx.x, fx.y, fx.r, 0, Math.PI * 2);
+      ctx.stroke();
+      // bright rim
+      ctx.beginPath();
+      ctx.strokeStyle = "rgba(255, 255, 255, " + (0.9 * alpha) + ")";
+      ctx.lineWidth = 3;
+      ctx.arc(fx.x, fx.y, fx.r * 0.92, 0, Math.PI * 2);
+      ctx.stroke();
+      // peach fill wash
+      ctx.beginPath();
+      ctx.fillStyle = "rgba(255, 140, 90, " + (0.12 * alpha) + ")";
+      ctx.arc(fx.x, fx.y, fx.r * 0.88, 0, Math.PI * 2);
+      ctx.fill();
+      // core flash early
+      if (fx.life > fx.maxLife * 0.7) {
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(255, 255, 240, " + (0.35 * alpha) + ")";
+        ctx.arc(fx.x, fx.y, 28, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
   }
 
   function killPlayer(p) {
@@ -357,11 +441,11 @@
       var tgt = nearestPlayer(e.x, e.y);
       if (e.pattern === 0 && e.t % 45 === 0) {
         var v = aimed(e.x, e.y, tgt.x, tgt.y, 2.25);
-        addBullet(e.x, e.y, v.vx, v.vy, 4, "#ff7a9a");
+        addBullet(e.x, e.y, v.vx, v.vy, 6, "#ff3d6a");
       } else if (e.pattern === 1 && e.t % 55 === 0) {
-        ring(e.x, e.y, 10, 1.85, e.t * 0.1, "#7ec8ff", 3.2);
+        ring(e.x, e.y, 10, 1.85, e.t * 0.1, "#5ec8ff", 5);
       } else if (e.pattern === 2 && e.t % 40 === 0) {
-        burstAimed(e.x, e.y, 3, 0.18, 2.45, "#c9a0ff", tgt);
+        burstAimed(e.x, e.y, 3, 0.18, 2.45, "#d080ff", tgt);
       }
     });
     enemies = enemies.filter(function (e) { return e.y < H + 40 && e.hp > 0; });
@@ -475,16 +559,38 @@
   }
 
   function drawBullet(bl) {
+    var R = bl.r;
+    // soft outer glow
     ctx.beginPath();
     ctx.fillStyle = bl.color;
-    ctx.globalAlpha = 0.92;
-    ctx.arc(bl.x, bl.y, bl.r, 0, Math.PI * 2);
+    ctx.globalAlpha = 0.28;
+    ctx.arc(bl.x, bl.y, R * 1.85, 0, Math.PI * 2);
     ctx.fill();
+    // dark outline for contrast on any bg
     ctx.beginPath();
-    ctx.fillStyle = "#fff";
+    ctx.globalAlpha = 0.9;
+    ctx.strokeStyle = "rgba(20, 8, 16, 0.85)";
+    ctx.lineWidth = 2;
+    ctx.arc(bl.x, bl.y, R + 0.5, 0, Math.PI * 2);
+    ctx.stroke();
+    // saturated shell
+    ctx.beginPath();
     ctx.globalAlpha = 1;
-    ctx.arc(bl.x, bl.y, bl.r * 0.42, 0, Math.PI * 2);
+    ctx.fillStyle = bl.color;
+    ctx.arc(bl.x, bl.y, R, 0, Math.PI * 2);
     ctx.fill();
+    // bright rim
+    ctx.beginPath();
+    ctx.strokeStyle = "rgba(255,255,255,0.75)";
+    ctx.lineWidth = 1.5;
+    ctx.arc(bl.x, bl.y, R * 0.78, 0, Math.PI * 2);
+    ctx.stroke();
+    // white core (classic danmaku readability)
+    ctx.beginPath();
+    ctx.fillStyle = "#ffffff";
+    ctx.arc(bl.x, bl.y, Math.max(2.2, R * 0.48), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
   }
 
   function drawShip(p, idx) {
