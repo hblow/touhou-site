@@ -632,9 +632,42 @@
   }
 
   /* ——— Lockstep ——— */
+  var gameStarted = false;
+  var handshakeTimer = null;
+  var inputResendTimer = null;
+  var stallFrames = 0;
+
   function ensureInput(f, seat, bits) {
     if (!remoteInputs[f]) remoteInputs[f] = {};
-    remoteInputs[f][seat] = bits;
+    remoteInputs[f][seat] = bits | 0;
+  }
+
+  function clearNetTimers() {
+    if (handshakeTimer) { clearInterval(handshakeTimer); handshakeTimer = null; }
+    if (inputResendTimer) { clearInterval(inputResendTimer); inputResendTimer = null; }
+  }
+
+  function submitLocalInputs() {
+    // Keep local inputs buffered for frames [frame .. frame+INPUT_DELAY]
+    var maxF = frame + INPUT_DELAY;
+    for (var f = frame; f <= maxF; f++) {
+      if (localInputQueue[f] !== undefined) continue;
+      var bits = bitsFromKeys();
+      localInputQueue[f] = bits;
+      ensureInput(f, localSeat, bits);
+      send({ t: "inp", f: f, b: bits, s: localSeat });
+    }
+    if (keys["x"] || keys["X"]) keys["x"] = keys["X"] = false;
+  }
+
+  function resendRecentInputs() {
+    if (mode !== "online" || state !== STATE.PLAY || !conn || !conn.open) return;
+    var from = Math.max(0, frame);
+    var to = frame + INPUT_DELAY;
+    for (var f = from; f <= to; f++) {
+      if (localInputQueue[f] === undefined) continue;
+      send({ t: "inp", f: f, b: localInputQueue[f], s: localSeat });
+    }
   }
 
   function trySim() {
@@ -642,28 +675,30 @@
     if (mode === "solo") {
       var bits = bitsFromKeys();
       simStep(bits, 0);
-      // one-shot bomb (don't hold-fire bombs every frame)
       if (keys["x"] || keys["X"]) keys["x"] = keys["X"] = false;
       return;
     }
-    // online lockstep: sample local input for frame+delay once
-    var target = frame + INPUT_DELAY;
-    if (localInputQueue[target] === undefined) {
-      var lb = bitsFromKeys();
-      localInputQueue[target] = lb;
-      ensureInput(target, localSeat, lb);
-      send({ t: "inp", f: target, b: lb, s: localSeat });
-      if (keys["x"] || keys["X"]) keys["x"] = keys["X"] = false;
-    }
-    // advance as many frames as we have both peers' inputs
+
+    submitLocalInputs();
+
     var advanced = 0;
-    while (advanced < 3) {
+    while (advanced < 5) {
       var need = remoteInputs[frame];
-      if (!need || need[0] === undefined || need[1] === undefined) break;
+      if (!need || need[0] === undefined || need[1] === undefined) {
+        stallFrames++;
+        if (stallFrames === 45) {
+          setStatus("Waiting on peer (frame " + frame + ")… re-syncing");
+          resendRecentInputs();
+          send({ t: "resync", frame: frame, seat: localSeat });
+        }
+        break;
+      }
+      stallFrames = 0;
       simStep(need[0], need[1]);
-      delete remoteInputs[frame - 2];
-      delete localInputQueue[frame - 2];
+      delete remoteInputs[frame - 8];
+      delete localInputQueue[frame - 8];
       advanced++;
+      submitLocalInputs();
     }
   }
 
@@ -678,17 +713,13 @@
         simAcc += dt;
         var steps = 0;
         while (simAcc >= FIXED_MS && steps < 5) {
+          var frameBefore = frame;
           trySim();
           simAcc -= FIXED_MS;
           steps++;
-          // if online and waiting on remote input, don't burn steps
-          if (mode === "online") {
-            var need = remoteInputs[frame];
-            if (!need || need[0] === undefined || need[1] === undefined) {
-              // still increment time budget carefully — trySim already no-op sim
-              // but frame doesn't advance without both inputs, so break to avoid spin
-              if (localInputQueue[frame + INPUT_DELAY] !== undefined) break;
-            }
+          if (mode === "online" && frame === frameBefore) {
+            if (simAcc > FIXED_MS * 3) simAcc = FIXED_MS * 3;
+            break;
           }
         }
         if (steps === 5) simAcc = 0;
@@ -710,6 +741,8 @@
   function destroyPeer() {
     matchmaking = false;
     waitingForPeer = false;
+    gameStarted = false;
+    clearNetTimers();
     try { if (conn) conn.close(); } catch (e) {}
     try { if (peer) peer.destroy(); } catch (e) {}
     conn = null;
@@ -729,20 +762,72 @@
     if (data.t === "hello") {
       peerNames[data.seat | 0] = data.name || peerNames[data.seat | 0];
       setPeers(peerNames[0] + "  ×  " + peerNames[1]);
-      if (netRole === "host" && state === STATE.LOBBY) {
+      if (netRole === "host" && !gameStarted) {
         var seed = (Date.now() ^ (Math.random() * 1e9)) >>> 0;
+        conn._startSeed = seed;
+        conn._startNames = peerNames.slice();
         send({ t: "start", seed: seed, names: peerNames });
-        beginOnline(seed);
+        setStatus("Host: start sent — waiting for guest ready…");
       }
     } else if (data.t === "start") {
       peerNames = data.names || peerNames;
       setPeers(peerNames[0] + "  ×  " + peerNames[1]);
-      beginOnline(data.seed);
+      if (netRole === "guest" && !gameStarted) {
+        conn._pendingSeed = data.seed;
+        conn._pendingNames = peerNames.slice();
+        send({ t: "ready", name: peerNames[localSeat] });
+        setStatus("Guest: ready sent — waiting for go…");
+      }
+    } else if (data.t === "ready") {
+      if (data.name) peerNames[netRole === "host" ? 1 : 0] = data.name;
+      setPeers(peerNames[0] + "  ×  " + peerNames[1]);
+      if (netRole === "host" && !gameStarted) {
+        var seed2 = (conn && conn._startSeed) || ((Date.now()) >>> 0);
+        send({ t: "go", seed: seed2, names: peerNames });
+        beginOnline(seed2);
+      }
+    } else if (data.t === "go") {
+      peerNames = data.names || peerNames;
+      setPeers(peerNames[0] + "  ×  " + peerNames[1]);
+      if (!gameStarted) beginOnline(data.seed);
     } else if (data.t === "inp") {
-      ensureInput(data.f, data.s, data.b);
-    } else if (data.t === "chat") {
-      // ignore
+      ensureInput(data.f | 0, data.s | 0, data.b | 0);
+    } else if (data.t === "resync") {
+      resendRecentInputs();
     }
+  }
+
+  function onConnOpen(role) {
+    waitingForPeer = false;
+    matchmaking = false;
+    if (el.netCancel) el.netCancel.hidden = true;
+    setStatus("Linked! Handshaking…");
+    localSeat = role === "host" ? 0 : 1;
+    netRole = role;
+    peerNames[localSeat] = (el.name && el.name.value.trim()) || (role === "host" ? "Host" : "Guest");
+    mode = "online";
+    state = STATE.LOBBY;
+    gameStarted = false;
+    showOverlay("CO-OP LOBBY", "Syncing with partner…", "接続");
+    send({ t: "hello", seat: localSeat, name: peerNames[localSeat] });
+
+    var n = 0;
+    clearNetTimers();
+    handshakeTimer = setInterval(function () {
+      if (gameStarted || !conn || !conn.open) {
+        clearNetTimers();
+        return;
+      }
+      n++;
+      send({ t: "hello", seat: localSeat, name: peerNames[localSeat] });
+      if (netRole === "host" && conn._startSeed != null) {
+        send({ t: "start", seed: conn._startSeed, names: conn._startNames || peerNames });
+      }
+      if (netRole === "guest" && conn._pendingSeed != null) {
+        send({ t: "ready", name: peerNames[localSeat] });
+      }
+      if (n > 25) clearNetTimers();
+    }, 300);
   }
 
   function wireConn(c, role) {
@@ -752,42 +837,56 @@
     c.on("close", function () {
       setStatus("Peer disconnected.");
       setPeers("");
-      if (state === STATE.PLAY) {
+      gameStarted = false;
+      clearNetTimers();
+      if (state === STATE.PLAY || state === STATE.LOBBY) {
         state = STATE.MENU;
+        mode = "solo";
         showOverlay("DISCONNECT", "Opponent left the stage", "切断");
       }
-      destroyPeer();
-    });
-    c.on("error", function () {
-      setStatus("Connection error.");
-    });
-    c.on("open", function () {
-      waitingForPeer = false;
-      matchmaking = false;
+      // don't full destroyPeer recursion issues — soft cleanup
+      try { if (peer) peer.destroy(); } catch (e) {}
+      conn = null;
+      peer = null;
+      netRole = null;
       if (el.netCancel) el.netCancel.hidden = true;
-      setStatus("Linked! Starting co-op…");
-      localSeat = role === "host" ? 0 : 1;
-      peerNames[localSeat] = (el.name && el.name.value.trim()) || (role === "host" ? "Host" : "Guest");
-      send({ t: "hello", seat: localSeat, name: peerNames[localSeat] });
-      mode = "online";
-      state = STATE.LOBBY;
-      showOverlay("CO-OP READY", "Waiting for handshake…", "接続");
     });
+    c.on("error", function (err) {
+      setStatus("Connection error: " + (err && err.type ? err.type : "unknown"));
+    });
+    // CRITICAL: open may have already fired before we attach the handler
+    var opened = false;
+    function handleOpen() {
+      if (opened) return;
+      opened = true;
+      onConnOpen(role);
+    }
+    c.on("open", handleOpen);
+    if (c.open) handleOpen();
   }
 
   function beginOnline(seed) {
+    if (gameStarted) return;
+    gameStarted = true;
+    clearNetTimers();
     mode = "online";
     state = STATE.PLAY;
     hideOverlay();
+    remoteInputs = Object.create(null);
+    localInputQueue = Object.create(null);
+    stallFrames = 0;
+    frame = 0;
     resetRun(seed);
-    // prefill delayed empty inputs
+    // Prefill delay frames with empty inputs for BOTH seats
     for (var f = 0; f < INPUT_DELAY; f++) {
       ensureInput(f, 0, 0);
       ensureInput(f, 1, 0);
       localInputQueue[f] = 0;
     }
-    setStatus("Online co-op — good luck!");
-    canvas.focus();
+    submitLocalInputs();
+    inputResendTimer = setInterval(resendRecentInputs, 180);
+    setStatus("Online co-op — fight together!");
+    try { canvas.focus(); } catch (e) {}
   }
 
   function makeRoomCode() {
@@ -803,20 +902,22 @@
       return;
     }
     destroyPeer();
+    gameStarted = false;
     var id = "cpdan-" + code.toLowerCase();
     setStatus("Hosting room " + code + "… share this code.");
     if (el.room) el.room.value = code;
     if (el.netCancel) el.netCancel.hidden = false;
     waitingForPeer = true;
-    peer = new Peer(id, { debug: 0 });
+    peer = new Peer(id, { debug: 1 });
     peer.on("open", function () {
       setStatus("Room " + code + " open — waiting for a friend…");
     });
     peer.on("connection", function (c) {
+      setStatus("Incoming connection…");
       wireConn(c, "host");
     });
     peer.on("error", function (err) {
-      setStatus("Host error: " + (err.type || err));
+      setStatus("Host error: " + (err.type || err.message || err));
       destroyPeer();
     });
   }
@@ -827,6 +928,7 @@
       return;
     }
     destroyPeer();
+    gameStarted = false;
     code = (code || "").trim().toUpperCase();
     if (code.length < 4) {
       setStatus("Enter a valid room code.");
@@ -834,13 +936,19 @@
     }
     setStatus("Joining " + code + "…");
     if (el.netCancel) el.netCancel.hidden = false;
-    peer = new Peer({ debug: 0 });
+    peer = new Peer({ debug: 1 });
     peer.on("open", function () {
+      setStatus("Connecting to room " + code + "…");
       var c = peer.connect("cpdan-" + code.toLowerCase(), { reliable: true });
       wireConn(c, "guest");
+      setTimeout(function () {
+        if (!gameStarted && netRole === "guest" && (!conn || !conn.open)) {
+          setStatus("Join timed out — is the host still on the page with that code?");
+        }
+      }, 15000);
     });
     peer.on("error", function (err) {
-      setStatus("Join error: " + (err.type || err) + " — is the host online?");
+      setStatus("Join error: " + (err.type || err.message || err) + " — is the host online?");
       destroyPeer();
     });
   }
